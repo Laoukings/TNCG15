@@ -306,6 +306,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\User\raytracer\source\main.cpp" />
+    <ClInclude Include="C:\Users\User\raytracer\include\main.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="C:\Users\User\raytracer\build\ZERO_CHECK.vcxproj">

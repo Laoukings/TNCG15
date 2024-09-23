@@ -24,11 +24,11 @@
 	ProcessorClockFrequency="2904"
 	>
 	<Testing>
-		<StartDateTime>Sep 23 11:42 V[NON-UTF-8-BYTE-0xE4]steuropa, sommartid</StartDateTime>
-		<StartTestTime>1727084557</StartTestTime>
+		<StartDateTime>Sep 23 16:37 V[NON-UTF-8-BYTE-0xE4]steuropa, sommartid</StartDateTime>
+		<StartTestTime>1727102276</StartTestTime>
 		<TestList/>
-		<EndDateTime>Sep 23 11:42 V[NON-UTF-8-BYTE-0xE4]steuropa, sommartid</EndDateTime>
-		<EndTestTime>1727084557</EndTestTime>
+		<EndDateTime>Sep 23 16:37 V[NON-UTF-8-BYTE-0xE4]steuropa, sommartid</EndDateTime>
+		<EndTestTime>1727102276</EndTestTime>
 		<ElapsedMinutes>0</ElapsedMinutes>
 	</Testing>
 </Site>
