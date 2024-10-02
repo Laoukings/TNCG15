@@ -26,8 +26,10 @@ int main()
     Camera camera;
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 500;
+    camera.camerasize = 256;
 
+
+    std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild
     for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
     {   
@@ -39,6 +41,20 @@ int main()
             //skapar all kolumner
             camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
             //Temporärt test för att se att den fungerade som det ska
+
+
+
+            //Färglägger pixlar där r,g,b komponenter går från 0-255.
+            auto r = double(Pixelx) / (camera.camerasize -1);
+            auto g = double(Pixely) / (camera.camerasize -1);
+            auto b = 0.0;
+
+            int ir = int(255.999 * r);
+            int ig = int(255.999 * g);
+            int ib = int(255.999 * b);
+
+            //Testar att skriva ut till ppm fil
+            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
         }
     }
 
