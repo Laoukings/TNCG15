@@ -5,6 +5,7 @@
 #include "color.h"
 #include <glm.hpp>
 #include <vector>
+#include "Object.h"
 
 //simpel kamera structur
 
