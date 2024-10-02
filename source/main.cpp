@@ -7,6 +7,8 @@
 #include <vector>
 #include "Object.h"
 
+//C:\Users\simon\TNCG15\TNCG15\include;C:\Users\simon\TNCG15\TNCG15\include\glm
+
 //simpel kamera structur
 
 struct Camera
