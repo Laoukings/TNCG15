@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include "vec3.h"
+#include "ray.h"
+#include "color.h"
 //simpel kamera structur
 struct Camera
 {   
@@ -25,7 +28,8 @@ int main()
         for (int Pixely = 0; Pixely < rows; Pixely++)
         {   
             //Temporärt test för att se att den fungerade som det ska
-            std::cout << "Hello World \n" << Pixelx;
+            //std::cout << "Hello World \n" << Pixelx;
+
         }
     }
 
