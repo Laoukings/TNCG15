@@ -9,12 +9,17 @@
 
 //C:\Users\simon\TNCG15\TNCG15\include;C:\Users\simon\TNCG15\TNCG15\include\glm
 
+//Länk till ppm viewer
+//https://www.cs.rhodes.edu/welshc/COMP141_F16/ppmReader.html
+
+//Paste in vscode terminal
+//build\Debug\Raytracing.exe > image.ppm
+
+
 //simpel kamera structur
 
 struct Camera
 {   
-    //2d array som lagrar alla pixlar. Just nu 500x500
-    //ska ändras till vec3
     std::vector<std::vector<glm::vec3>> Picture;
     int camerasize;
 
