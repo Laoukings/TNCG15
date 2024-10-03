@@ -21,3 +21,14 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 glm::vec3 Triangle::Normal() {
 	return glm::vec3(0, 0, 0);
 }
+
+//rectangle
+bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
+	return true;
+}
+
+//return rectangles normal
+glm::vec3 Rectangle::Normal() {
+	return glm::vec3(0, 0, 0);
+}
+

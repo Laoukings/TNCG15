@@ -77,3 +77,31 @@ protected:
 	glm::vec3 points[3];
 	glm::vec3 normal;
 };
+
+class Rectangle : public Object {
+public:
+	Rectangle() = default;
+
+	//rectangle constructor
+	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor) {
+		//corners of the rectangle
+		points[0] = point1;
+		points[1] = point2;
+		points[2] = point3;
+		points[3] = point4;
+		normal = Normal();
+		color = rectanglecolor;
+	}
+
+	//rectangle collision
+	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
+
+	//rectangle normal
+	glm::vec3 Normal() override;
+
+
+protected:
+	//rectangle variables
+	glm::vec3 points[4];
+	glm::vec3 normal;
+};
