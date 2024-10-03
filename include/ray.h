@@ -4,9 +4,7 @@
 class ray {
 public:
 	//default constructor with all needed elements
-	ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 raycolor, ray* previousray, ray* nextray) 
-		: origin(originpoint), dir(direction), color(raycolor), previous(previousray), next(nextray) {}
-
+	ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 raycolor, ray* previousray, ray* nextray);
 
 	glm::vec3 originpoint() { return origin; }
 	glm::vec3 direction() { return dir; }
