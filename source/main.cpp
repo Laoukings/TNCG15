@@ -1,8 +1,6 @@
 #include <iostream>
 
-#include "vec3.h"
 #include "ray.h"
-#include "color.h"
 #include <glm.hpp>
 #include <vector>
 #include "Object.h"
@@ -16,7 +14,7 @@ struct Camera
     //2d array som lagrar alla pixlar. Just nu 500x500
     //ska ändras till vec3
     std::vector<std::vector<glm::vec3>> Picture;
-    int camerasize;
+    int camerasize = 0;
 
 };
 
