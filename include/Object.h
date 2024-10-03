@@ -2,6 +2,8 @@
 
 #include <glm.hpp>
 
+class ray;
+
 //Masterclass
 class Object {
 public:
@@ -17,7 +19,7 @@ public:
 	}
 
 protected:
-	glm::vec3 color;
+	glm::vec3 color = glm::vec3(0,0,0);
 	
 };
 
