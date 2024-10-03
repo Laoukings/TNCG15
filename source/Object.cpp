@@ -3,7 +3,7 @@
 
 
 //Sphere
-bool Sphere::collision(ray& ray, intersectionpoint) {
+bool Sphere::collision(ray& ray, glm::vec3& intersectionpoint) {
 	return true;
 }
 
@@ -12,7 +12,7 @@ glm::vec3 Sphere::Normal() {
 }
 
 //triangle
-bool Triangle::collision(ray& ray, intersectionpoint) {
+bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	return true;
 }
 
