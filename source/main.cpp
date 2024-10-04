@@ -19,49 +19,51 @@
 //simpel kamera structur
 
 struct Camera
-{   
-    std::vector<std::vector<glm::vec3>> Picture;
-    int camerasize;
+{
+	std::vector<std::vector<glm::vec3>> Picture;
+	int camerasize;
 
 };
 
 int main()
 {
-    //Kameran som kommer rendreras
-    Camera camera;
+	//Kameran som kommer rendreras
+	Camera camera;
 
-    //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 256;
-
-
-    std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
-    //for-loop som skapar en blank bild
-    for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
-    {   
-        //Skapar en rad
-        camera.Picture.push_back(std::vector<glm::vec3>());
-
-        for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
-        {   
-            //skapar all kolumner
-            camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
-            //Temporärt test för att se att den fungerade som det ska
+	//storlek på antal kolumner och rader i bilden
+	camera.camerasize = 256;
 
 
+	std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
+	//for-loop som skapar en blank bild
+	for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
+	{
+		//Skapar en rad
+		camera.Picture.push_back(std::vector<glm::vec3>());
 
-            //Färglägger pixlar där r,g,b komponenter går från 0-255.
-            auto r = double(Pixelx) / (camera.camerasize -1);
-            auto g = double(Pixely) / (camera.camerasize -1);
-            auto b = 0.0;
+		for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
+		{
+			//skapar all kolumner
+			camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
+			//Temporärt test för att se att den fungerade som det ska
 
-            int ir = int(255.999 * r);
-            int ig = int(255.999 * g);
-            int ib = int(255.999 * b);
+			//Färglägger pixlar där r,g,b komponenter går från 0-255.
+			auto r = double(Pixelx) / (camera.camerasize - 1);
+			auto g = double(Pixely) / (camera.camerasize - 1);
+			auto b = 0.0;
 
-            //Testar att skriva ut till ppm fil
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
-        }
-    }
+			int ir = int(255.999 * r);
+			int ig = int(255.999 * g);
+			int ib = int(255.999 * b);
 
-    return 0;
+			camera.Picture[Pixelx][Pixely].x = ir;
+			camera.Picture[Pixelx][Pixely].y = ig;
+			camera.Picture[Pixelx][Pixely].z = ib;
+
+			//Testar att skriva ut till ppm fil
+			std::cout << camera.Picture[Pixelx][Pixely].x << ' ' << camera.Picture[Pixelx][Pixely].y << ' ' << camera.Picture[Pixelx][Pixely].z << '\n';
+		}
+	}
+
+	return 0;
 }
