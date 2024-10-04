@@ -16,6 +16,7 @@ struct Camera
     //2d array som lagrar alla pixlar. Just nu 500x500
     std::vector<std::vector<glm::vec3>> Picture;
     int camerasize = 0;
+    glm::vec3 eye = glm::vec3(-1, 0, 0);
 
 };
 
@@ -26,7 +27,6 @@ int main()
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 256;
-
 
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild
@@ -41,6 +41,12 @@ int main()
             camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
             //Temporärt test för att se att den fungerade som det ska
 
+            glm::vec3 pixelPos = glm::vec3((2/camera.camerasize) * Pixelx,(2/camera.camerasize) * Pixely,0);
+
+            pixelPos -= camera.eye;
+            
+
+            ray sceneray(camera.eye,pixelPos,glm::vec3(0,0,0),nullptr,nullptr);
 
 
             //Färglägger pixlar där r,g,b komponenter går från 0-255.
