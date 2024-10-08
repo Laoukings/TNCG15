@@ -24,6 +24,7 @@ int main()
 {
     //Kameran som kommer rendreras
     Camera camera;
+    Scene scene;
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 256;
@@ -47,7 +48,7 @@ int main()
             
 
             ray sceneray(camera.eye,pixelPos,glm::vec3(0,0,0),nullptr,nullptr);
-
+            camera.Picture[Pixelx][Pixely] = sceneray.Raycolorcalc(4, scene);
 
             //Färglägger pixlar där r,g,b komponenter går från 0-255.
             auto r = double(Pixelx) / (camera.camerasize -1);
