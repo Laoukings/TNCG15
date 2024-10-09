@@ -13,6 +13,7 @@ void Scene::addTriangle(Triangle object) {
 	sceneTriangles.push_back(object);
 }
 
+//add rectangle
 void Scene::addRectangle(Rectangle object) {
 	sceneRectangles.push_back(object);
 }

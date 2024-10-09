@@ -26,6 +26,7 @@ int main()
     Camera camera;
     Scene scene;
 
+    //massor testobject
     Sphere red(1.0, glm::vec3(10.0, 0, -4.0), glm::vec3(1, 0, 0));
     Sphere secondSphere(1.0, glm::vec3(10.0, 0, 2.0), glm::vec3(0, 0.5, 1));
 
@@ -33,11 +34,12 @@ int main()
     glm::vec3 v2(10, 6, -5);
     glm::vec3 v3(0, 6, 5);
     glm::vec3 v4(10, 6, 5);
+
+    //normalerna är motsatta
     Rectangle colltest(v1, v2, v3, v4, glm::vec3(0, 1.0, 0));
     Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
     Triangle tricolltest2(v4, v3, v2, glm::vec3(0, 0, 1.0));
 
-    
     scene.addSphere(red);
     scene.addSphere(secondSphere);
     scene.addRectangle(colltest);

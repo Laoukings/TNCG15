@@ -6,7 +6,7 @@
 
 	glm::vec3 ray::Raycolorcalc(int reflectionamount, Scene& scene) {
 
-
+		//också massor test inte skrivit än. kollar bara kollision inget annat
 		glm::vec3 intersec(0, 0, 0);
 		//if (scene.getSpheres()[0].collision(*this,intersec))
 		//{

@@ -7,6 +7,7 @@ public:
 	//default constructor with all needed elements
 	ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 raycolor, ray* previousray, ray* nextray);
 
+	//calc color in pixel
 	glm::vec3 Raycolorcalc(int reflectionamount, Scene& scene);
 
 	//reach variables
