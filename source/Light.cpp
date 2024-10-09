@@ -1,10 +1,10 @@
 #include "Light.h"
 
 //constructor
-Light::Light(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 color) {
+Light::Light(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 point4 , glm::vec3 color) {
 
 	//the light is currently a triangle since that object is already written
-	position = Triangle(point1, point2, point3, color);
+	position = Rectangle(point1, point2, point3, point4, color);
 
 	}
 

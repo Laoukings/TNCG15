@@ -13,6 +13,10 @@ void Scene::addTriangle(Triangle object) {
 	sceneTriangles.push_back(object);
 }
 
+void Scene::addRectangle(Rectangle object) {
+	sceneRectangles.push_back(object);
+}
+
 //add a light into the scene
 void Scene::addLight(Light light) {
 	sceneLights.push_back(light);

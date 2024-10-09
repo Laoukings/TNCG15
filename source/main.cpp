@@ -27,13 +27,25 @@ int main()
     Scene scene;
 
     Sphere red(1.0, glm::vec3(10.0, 0, -4.0), glm::vec3(1, 0, 0));
-    Sphere secondSphere(1.0, glm::vec3(10.0, 0, 4.0), glm::vec3(0, 0.5, 1));
+    Sphere secondSphere(1.0, glm::vec3(10.0, 0, 2.0), glm::vec3(0, 0.5, 1));
+
+    glm::vec3 v1(0, 6, -5);
+    glm::vec3 v2(10, 6, -5);
+    glm::vec3 v3(0, 6, 5);
+    glm::vec3 v4(10, 6, 5);
+    Rectangle colltest(v1, v2, v3, v4, glm::vec3(0, 1.0, 0));
+    Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
+    Triangle tricolltest2(v4, v3, v2, glm::vec3(0, 0, 1.0));
+
     
     scene.addSphere(red);
     scene.addSphere(secondSphere);
+    scene.addRectangle(colltest);
+    scene.addTriangle(tricolltest);
+    scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 256;
+    camera.camerasize = 600;
 
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild

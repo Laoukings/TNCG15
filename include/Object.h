@@ -7,6 +7,9 @@ class ray;
 //Masterclass
 class Object {
 public:
+
+	virtual bool intersecNormal(ray& ray) = 0;
+
 	//check if it collides
 	virtual bool collision(ray& ray, glm::vec3& intersectionpoint) = 0;
 
@@ -21,7 +24,7 @@ public:
 protected:
 	//variables
 	glm::vec3 color = glm::vec3(0,0,0);
-	
+	int material = 0;
 };
 
 //subclass for spheres
@@ -37,6 +40,8 @@ public:
 		color = spherecolor;
 		normal = Normal();
 	}
+
+	bool intersecNormal(ray& ray) override;
 
 	//sphere collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
@@ -66,6 +71,8 @@ public:
 		color = trianglecolor;
 	}
 
+	bool intersecNormal(ray& ray) override;
+
 	//triangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
@@ -92,6 +99,8 @@ public:
 		normal = Normal();
 		color = rectanglecolor;
 	}
+
+	bool intersecNormal(ray& ray) override;
 
 	//rectangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;

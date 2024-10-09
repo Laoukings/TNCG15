@@ -14,8 +14,6 @@ public:
 	glm::vec3 direction() { return dir; }
 	glm::vec3 raycolor() { return color; }
 
-
-
 private:
 	//variables
 	glm::vec3 origin;
