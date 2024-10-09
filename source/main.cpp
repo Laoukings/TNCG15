@@ -68,7 +68,7 @@ int main()
             //int ib = int(255.999 * b);
 
             //Testar att skriva ut till ppm fil
-            std::cout << camera.Picture[Pixelx][Pixely].x << ' ' << camera.Picture[Pixelx][Pixely].y << ' ' << camera.Picture[Pixelx][Pixely].z << '\n';
+            std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
     }
 
