@@ -18,9 +18,9 @@ public:
 
 private:
 	//variables
-	glm::vec3 origin = glm::vec3(0,0,0);
-	glm::vec3 dir = glm::vec3(0, 0, 0);
-	glm::vec3 color = glm::vec3(0, 0, 0);
+	glm::vec3 origin;
+	glm::vec3 dir;
+	glm::vec3 color;
 	ray* previous = nullptr;
 	ray* next = nullptr;
 

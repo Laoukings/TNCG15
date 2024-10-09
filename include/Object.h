@@ -31,7 +31,7 @@ public:
 	Sphere() = default;
 
 	//sphere constructor
-	Sphere(double& rad, glm::vec3 pos, glm::vec3 spherecolor) {
+	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor) {
 		radius = rad;
 		position = pos;
 		color = spherecolor;

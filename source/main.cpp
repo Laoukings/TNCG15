@@ -26,6 +26,12 @@ int main()
     Camera camera;
     Scene scene;
 
+    Sphere red(1.0, glm::vec3(10.0, 0, -4.0), glm::vec3(1, 0, 0));
+    Sphere secondSphere(1.0, glm::vec3(10.0, 0, 4.0), glm::vec3(0, 0.5, 1));
+    
+    scene.addSphere(red);
+    scene.addSphere(secondSphere);
+
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 256;
 
@@ -42,25 +48,27 @@ int main()
             camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
             //Temporärt test för att se att den fungerade som det ska
 
-            glm::vec3 pixelPos = glm::vec3((2/camera.camerasize) * Pixelx,(2/camera.camerasize) * Pixely,0);
+            glm::vec3 pixelPos = glm::vec3(0.0, (2.0 / camera.camerasize) * (Pixelx - (camera.camerasize / 2.0)), (2.0 / camera.camerasize) * (Pixely - (camera.camerasize / 2.0)));
+
 
             pixelPos -= camera.eye;
             
+            //std::cout << pixelPos.x << pixelPos.y << pixelPos.z;
 
             ray sceneray(camera.eye,pixelPos,glm::vec3(0,0,0),nullptr,nullptr);
-            camera.Picture[Pixelx][Pixely] = sceneray.Raycolorcalc(4, scene);
+            camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
 
             //Färglägger pixlar där r,g,b komponenter går från 0-255.
-            auto r = double(Pixelx) / (camera.camerasize -1);
-            auto g = double(Pixely) / (camera.camerasize -1);
-            auto b = 0.0;
+            //auto r = double(Pixelx) / (camera.camerasize -1);
+            //auto g = double(Pixely) / (camera.camerasize -1);
+            //auto b = 0.0;
 
-            int ir = int(255.999 * r);
-            int ig = int(255.999 * g);
-            int ib = int(255.999 * b);
+            //int ir = int(255.999 * r);
+            //int ig = int(255.999 * g);
+            //int ib = int(255.999 * b);
 
             //Testar att skriva ut till ppm fil
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
+            std::cout << camera.Picture[Pixelx][Pixely].x << ' ' << camera.Picture[Pixelx][Pixely].y << ' ' << camera.Picture[Pixelx][Pixely].z << '\n';
         }
     }
 

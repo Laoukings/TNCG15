@@ -5,5 +5,18 @@
 	: origin(originpoint), dir(direction), color(raycolor), previous(previousray), next(nextray) {}
 
 	glm::vec3 ray::Raycolorcalc(int reflectionamount, Scene& scene) {
+
+
+		glm::vec3 intersec(0, 0, 0);
+		if (scene.getSpheres()[0].collision(*this,intersec))
+		{
+			return scene.getSpheres()[0].getColor();
+		}
+
+		if (scene.getSpheres()[1].collision(*this, intersec))
+		{
+			return scene.getSpheres()[1].getColor();
+		}
+
 		return glm::vec3(0, 0, 0);
 	}
