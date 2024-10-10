@@ -24,7 +24,7 @@ double Light::Area() {
 
 //returns a random point on light
 glm::vec3 Light::Randompoint() {
-	double randheight = (double) rand() / RAND_MAX;
+	double randheight = (double)rand() / RAND_MAX;
 	double randwidth = (double)rand() / RAND_MAX;
 	glm::vec3 pointonlight1 = (point2 - point1) * glm::vec3(randheight, randheight, randheight);
 	glm::vec3 pointonlight2 = (point3 - point1) * glm::vec3(randwidth, randwidth, randwidth);
