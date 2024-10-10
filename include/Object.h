@@ -21,10 +21,16 @@ public:
 		return color;
 	}
 
+	int getMaterial() {
+		return material;
+	}
+
 protected:
 	//variables
 	glm::vec3 color = glm::vec3(0,0,0);
-	int material = 0;
+
+	//0 = diffuse, 1 = mirror, 2 = light, 3 = room
+	int material;
 };
 
 //subclass for spheres
@@ -34,7 +40,7 @@ public:
 	Sphere() = default;
 
 	//sphere constructor
-	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor) {
+	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor, int material) {
 		radius = rad;
 		position = pos;
 		color = spherecolor;
@@ -62,7 +68,7 @@ public:
 	Triangle() = default;
 
 	//triangle constructor
-	Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 trianglecolor) {
+	Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 trianglecolor, int material) {
 		//the corners of the triangle
 		points[0] = point1;
 		points[1] = point2;
@@ -90,7 +96,7 @@ public:
 	Rectangle() = default;
 
 	//rectangle constructor
-	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor) {
+	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor, int material) {
 		//corners of the rectangle
 		points[0] = point1;
 		points[1] = point2;
