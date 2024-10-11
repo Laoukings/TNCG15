@@ -22,6 +22,7 @@ public:
 	std::vector<Triangle>& getTriangles() { return sceneTriangles; }
 	std::vector<Rectangle>& getRectangle() { return sceneRectangles; }
 	std::vector<Light>& getLights() { return sceneLights; }
+	std::vector<std::shared_ptr<Object>>& getObjects() { return Objects; }
 
 private:
 	//vectors with all objects
@@ -29,6 +30,7 @@ private:
 	std::vector<Triangle> sceneTriangles;
 	std::vector<Rectangle> sceneRectangles;
 	std::vector<Light> sceneLights;
+	std::vector<std::shared_ptr<Object>> Objects;
 
 };
 

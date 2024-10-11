@@ -28,8 +28,8 @@ int main()
     Scene scene;
 
     //massor testobject
-    Sphere red(1.0, glm::vec3(8.0, 6.0, -4.0), glm::vec3(1, 0, 1),0);
-    Sphere secondSphere(3.0, glm::vec3(10.0, 0, 2.0), glm::vec3(0, 0.5, 1),1);
+    Sphere red(1.0, glm::vec3(8.0, 8.0, -2.0), glm::vec3(1, 0, 1),0);
+    Sphere secondSphere(3.0, glm::vec3(10.0, 0, 2.0), glm::vec3(0, 0.5, 1),0);
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -90,6 +90,7 @@ int main()
 
     //testa runt lite
     Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
+    //Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
 
     //normalerna är motsatta
@@ -104,13 +105,14 @@ int main()
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 800;
-    camera.samples = 5;
+    camera.samples = 10;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
     std::uniform_real_distribution<double> pixelrand(pixellowerbound, pixelupperbound);
     std::default_random_engine re;
 
+    double largestcol = 255;
 
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild
@@ -131,21 +133,31 @@ int main()
             for (int i = 0; i < camera.samples; i++)
             {   
                 //roterad av någon anledning
-                double randomx = pixelrand(re) - 1.0 / camera.camerasize;
-                double randomy = pixelrand(re) - 1.0 / camera.camerasize;
+                double randomx = pixelrand(re) - 4.0 / camera.camerasize;
+                double randomy = pixelrand(re) - 4.0 / camera.camerasize;
 
                 double x = (2.0 / (double)camera.camerasize) * (Pixely - (double)(camera.camerasize / 2.0)) + randomx;
                 double y = -(2.0 / (double)camera.camerasize) * (Pixelx - (double)(camera.camerasize / 2.0)) + randomy;
 
                 glm::vec3 pixelPos = glm::vec3(0.0, x, y) - camera.eye;
                 ray sceneray(camera.eye, pixelPos);
-                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(4, scene);
+                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
+            }
+
+            if (color.x > largestcol) {
+                largestcol = color.x;
+            }
+            if (color.y > largestcol) {
+                largestcol = color.y;
+            }
+            if (color.z > largestcol) {
+                largestcol = color.z;
             }
 
             //camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
 
-            //färgen dividerad med mängden samples
-            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0/(double) camera.samples, 1.0 / (double) camera.samples, 1.0 / (double) camera.samples) ;
+            //färgen dividerad med största färgen
+            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
 
             //Testar att skriva ut till ppm fil
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';

@@ -1,7 +1,7 @@
 #include "ray.h"
 	
 	//default constructor
-	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 raycolor, ray* previousray, ray* nextray)
+	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color, ray* previousray, ray* nextray)
 	: origin(originpoint), dir(direction), color(color), previous(previousray), next(nextray) {}
 
 	//gauss random funktion
@@ -36,95 +36,110 @@
 	}
 
 	//mega function for calculating ray color
-	glm::vec3 ray::Raycolorcalc(int reflectionamount, Scene& scene) {
+	glm::vec3 ray::Raycolorcalc(ray& inray, int reflectionamount, Scene& scene) {
 
 		//variables
 		glm::vec3 intersec;
-		Object* nearestObject = nullptr;
+		std::shared_ptr<Object> nearestObject = nullptr;
 		//high max values outside of scene
-		float nearestColl = 10000000000000000.0;
+		float nearestColl = 10000000000000000000000000000000000000000.0;
 		double t = 10000000000000000000000.0;
 
 		//check which object is closest and intersects
-		for (int i = 0; i < scene.getTriangles().size(); i++)
-		{	
+		// 
+		// code before shared list
+		// 
+		//for (int i = 0; i < scene.getTriangles().size(); i++)
+		//{	
 
-			if(scene.getTriangles()[i].collision(*this,intersec))
-			{	
-				t = glm::length(intersec - origin);
-				if (t < nearestColl)
-				{
-					nearestObject = &(scene.getTriangles()[i]);
-					nearestColl = t;
-				}
-			}
-		}
+		//	if(scene.getTriangles()[i].collision(*this,intersec))
+		//	{	
+		//		t = glm::length(intersec - origin);
+		//		if (t < nearestColl)
+		//		{
+		//			nearestObject = &(scene.getTriangles()[i]);
+		//			nearestColl = t;
+		//		}
+		//	}
+		//}
 
-		for (int i = 0; i < scene.getRectangle().size(); i++)
-		{
+		//for (int i = 0; i < scene.getRectangle().size(); i++)
+		//{
 
-			if (scene.getRectangle()[i].collision(*this, intersec))
-			{
-				t = glm::length(intersec - origin);
+		//	if (scene.getRectangle()[i].collision(*this, intersec))
+		//	{
+		//		t = glm::length(intersec - origin);
 
-				if (t < nearestColl)
-				{
-					nearestObject = &(scene.getRectangle()[i]);
-					nearestColl = t;
-				}
-			}
-		}
+		//		if (t < nearestColl)
+		//		{
+		//			nearestObject = &(scene.getRectangle()[i]);
+		//			nearestColl = t;
+		//		}
+		//	}
+		//}
 
-		for (int i = 0; i < scene.getSpheres().size(); i++)
-		{
+		//for (int i = 0; i < scene.getSpheres().size(); i++)
+		//{
 
-			if (scene.getSpheres()[i].collision(*this, intersec))
-			{
-				t = glm::length(intersec - origin);
-				if (t < nearestColl)
-				{
-					nearestObject = &(scene.getSpheres()[i]);
-					nearestColl = t;
-				}
-			}
-		}
+		//	if (scene.getSpheres()[i].collision(*this, intersec))
+		//	{
+		//		t = glm::length(intersec - origin);
+		//		if (t < nearestColl)
+		//		{
+		//			nearestObject = &(scene.getSpheres()[i]);
+		//			nearestColl = t;
+		//		}
+		//	}
+		//}
 
 		//maybe wrong
 		glm::vec3 combinedcolor(0,0,0);
 
-		//check for nullptrs
-		if (nearestObject != nullptr) {
+		for (int i = 0; i < scene.getObjects().size(); i++)
+		{
+			if (scene.getObjects()[i]->collision(inray, intersec)) {
 
-			end = intersec;
+				t = glm::length(intersec - inray.origin);
 
-			//check all lights
-			for (int i = 0; i < scene.getLights().size(); i++)
-			{
-				//check material room tba
-				if (nearestObject->getMaterial() == 1)
+				if (t < nearestColl)
 				{
-					glm::vec3 newdir = direction() - (glm::vec3(2.0,2.0,2.0) * glm::dot(direction(),nearestObject->Normal()) * nearestObject->Normal());
-					ray newray(end,newdir);
-					glm::vec3 reflectedcolor = newray.Raycolorcalc(reflectionamount - 1, scene);
+						nearestObject = scene.getObjects()[i];
+						nearestColl = t;
+						inray.end = intersec;
 
-					delete this->next;
-					this->next = nullptr;
+						//check lights
+						for (int i = 0; i < scene.getLights().size(); i++)
+						{
+							//check material room tba
+							if (nearestObject->getMaterial() == 1)
+							{
+								glm::vec3 newdir = this->direction() - ((glm::vec3(2.0, 2.0, 2.0) * glm::dot(direction(), nearestObject->Normal()) * nearestObject->Normal()));
+								ray newray(this->end, newdir);
+								glm::vec3 reflectedcolor = newray.Raycolorcalc(newray, reflectionamount - 1, scene);
 
-					combinedcolor += reflectedcolor;
-				}
-				else if (nearestObject->getMaterial() == 2) {
-					combinedcolor = scene.getLights()[i].Color();
-					return combinedcolor;
-				}
-				else {
-					//shadowray
-					//lite skumt
-					combinedcolor = (nearestObject->getColor() * glm::vec3(0.5, 0.5, 0.5)) + this->Shadowray(nearestObject, &scene.getLights()[i], scene);
-				}
+								delete this->next;
+								this->next = nullptr;
 
+								combinedcolor += reflectedcolor;
+							}
+							else if (nearestObject->getMaterial() == 2) {
+								combinedcolor = scene.getLights()[i].Color();
+								return combinedcolor;
+							}
+							else {
+								//shadowray
+								//lite skumt
+								combinedcolor = (nearestObject->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(nearestObject, scene.getLights()[i], scene);
+							}
+
+						}
+
+				}
+				this->end = intersec;
 			}
-			end = intersec;
 		}
+
+
 
 		glm::vec3 randvec;
 		//blir nullptr ibland
@@ -134,7 +149,7 @@
 				randvec = Gauss(nearestObject->Normal());
 				next = new ray(end, randvec);
 				//lite skum
-				glm::vec3 lightcolor = next->Raycolorcalc(reflectionamount - 1, scene);
+				glm::vec3 lightcolor = this->next->Raycolorcalc(*this->next, reflectionamount - 1, scene);
 
 				delete this->next;
 				this->next = nullptr;
@@ -144,17 +159,13 @@
 			}
 		}
 
-		//if (nearestObject != nullptr) {
-		//	return nearestObject->getColor();
-		//}
-
 		return combinedcolor;
 	}
 
-	glm::vec3 ray::Shadowray(Object* object, Light* light, Scene scene) {
+	glm::vec3 ray::Shadowray(std::shared_ptr<Object> object, Light& light, Scene scene) {
 
 		glm::vec3 shadow(0, 0, 0);
-		glm::vec3 lightp = light->Randompoint();
+		glm::vec3 lightp = light.Randompoint();
 
 		//skumt namn
 		double darkper = 1.0;
@@ -174,39 +185,52 @@
 			ray shadowray(end, glm::normalize(distance));
 
 			//väldigt osäker på pointers kan leda till fel
-			for (int i = 0; i < scene.getTriangles().size(); i++)
+			//for (int i = 0; i < scene.getTriangles().size(); i++)
+			//{
+			//	if (&scene.getTriangles()[i] != object && scene.getTriangles()[i].collision(shadowray,collisionpoint)) {
+			//		//if the length to the object is shorther than where it should hit
+			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
+			//		{
+			//			maxlength = glm::length(collisionpoint - end) + 0.001;
+			//		}
+			//	}
+			//	
+			//}
+
+			//for (int i = 0; i < scene.getRectangle().size(); i++)
+			//{
+			//	if (&scene.getRectangle()[i] != object && scene.getRectangle()[i].collision(shadowray, collisionpoint)) {
+			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
+			//		{
+			//			maxlength = glm::length(collisionpoint - end) + 0.001;
+			//		}
+			//	}
+			//	
+			//}
+
+			//for (int i = 0; i < scene.getSpheres().size(); i++)
+			//{
+			//	if (&scene.getSpheres()[i] != object && scene.getSpheres()[i].collision(shadowray, collisionpoint)) {
+			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
+			//		{
+			//			maxlength = glm::length(collisionpoint - end) + 0.001;
+			//		}
+			//	}
+			//
+			//}
+
+
+			for (int i = 0; i < scene.getObjects().size(); i++)
 			{
-				if (&scene.getTriangles()[i] != object && scene.getTriangles()[i].collision(shadowray,collisionpoint)) {
-					//if the length to the object is shorther than where it should hit
+				if (scene.getObjects()[i] != object && scene.getObjects()[i]->collision(shadowray,collisionpoint)) {
 					if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-					{
-						maxlength = glm::length(collisionpoint - end) + 0.001;
-					}
+						{
+							maxlength = glm::length(collisionpoint - end) + 0.001;
+						}
 				}
-				
+
 			}
 
-			for (int i = 0; i < scene.getRectangle().size(); i++)
-			{
-				if (&scene.getRectangle()[i] != object && scene.getRectangle()[i].collision(shadowray, collisionpoint)) {
-					if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-					{
-						maxlength = glm::length(collisionpoint - end) + 0.001;
-					}
-				}
-				
-			}
-
-			for (int i = 0; i < scene.getSpheres().size(); i++)
-			{
-				if (&scene.getSpheres()[i] != object && scene.getSpheres()[i].collision(shadowray, collisionpoint)) {
-					if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-					{
-						maxlength = glm::length(collisionpoint - end) + 0.001;
-					}
-				}
-			
-			}
 
 			//check if it hit anything
 			if (maxlength < distancelength) {
@@ -215,11 +239,11 @@
 
 			//formuler
 			double thetax = glm::dot(glm::normalize(object->Normal()), glm::normalize(distance));
-			double thetay = glm::dot(light->position.Normal(), glm::normalize(distance));
+			double thetay = glm::dot(light.position.Normal(), glm::normalize(distance));
 
 			double div = pow(abs(distancelength), 2);
 
-			double lambda = std::max((darkper * light->Area() * 3.14159265 * thetax * (-thetay)) / div, 0.0);
+			double lambda = std::max((darkper * light.Area() * 3.14159265 * thetax * (-thetay)) / div, 0.0);
 			shadow += glm::vec3(lambda, lambda, lambda);
 		}
 
