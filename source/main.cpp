@@ -28,7 +28,7 @@ int main()
     Scene scene;
 
     //massor testobject
-    Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1),1);
+    Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1),0);
     Sphere secondSphere(1.0, glm::vec3(10.0, -2.0, 0.0), glm::vec3(0, 0.5, 1),0);
 
     //roof coordinates
@@ -66,12 +66,12 @@ int main()
     Triangle floortri1(f6,f2,f1, glm::vec3(1.0, 0, 0),3);
     Triangle floortri2(f5,f4,f3, glm::vec3(1.0, 0, 0),3);
     
-    Rectangle lwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),1);
-    Rectangle rwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
-    Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
-    Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0),3);
-    Rectangle lclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 0),3);
-    Rectangle rclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0),3);
+    Rectangle rwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),1);
+    Rectangle lwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
+    Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0), 3);
+    Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 3);
+    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 0),3);
+    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0),3);
 
     //coll test
     //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
