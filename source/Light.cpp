@@ -15,7 +15,8 @@ glm::vec3 Light::Color() {
 
 //the normal of the light
 glm::vec3 Light::Normal() {
-	return position.Normal();
+	//return position.Normal();
+	return glm::vec3(0,0,-1);
 }
 
 double Light::Area() {

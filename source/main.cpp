@@ -28,8 +28,8 @@ int main()
     Scene scene;
 
     //massor testobject
-    Sphere red(1.0, glm::vec3(8.0, 8.0, -2.0), glm::vec3(1, 0, 1),0);
-    Sphere secondSphere(3.0, glm::vec3(10.0, 0, 2.0), glm::vec3(0, 0.5, 1),0);
+    Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1),1);
+    Sphere secondSphere(1.0, glm::vec3(10.0, -2.0, 0.0), glm::vec3(0, 0.5, 1),0);
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -66,12 +66,16 @@ int main()
     Triangle floortri1(f6,f2,f1, glm::vec3(1.0, 0, 0),3);
     Triangle floortri2(f5,f4,f3, glm::vec3(1.0, 0, 0),3);
     
-    Rectangle lwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),3);
+    Rectangle lwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),1);
     Rectangle rwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
-    Rectangle lfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0),3);
-    Rectangle rfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0),3);
+    Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
+    Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0),3);
     Rectangle lclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 0),3);
     Rectangle rclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0),3);
+
+    //coll test
+    //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
+    //scene.addRectangle(test);
 
     scene.addRectangle(floor);
     scene.addTriangle(rooftri1);
@@ -88,6 +92,10 @@ int main()
     scene.addRectangle(lclosewall);
     scene.addRectangle(rclosewall);
 
+    scene.addSphere(secondSphere);
+    scene.addSphere(red);
+  
+
     //testa runt lite
     Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
     //Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
@@ -97,15 +105,14 @@ int main()
     //Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
     //Triangle tricolltest2(v4, v3, v2, glm::vec3(0, 0, 1.0));
 
-    scene.addSphere(red);
-    scene.addSphere(secondSphere);
+
 
     //scene.addTriangle(tricolltest);
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 800;
-    camera.samples = 10;
+    camera.samples = 1;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
@@ -136,12 +143,13 @@ int main()
                 double randomx = pixelrand(re) - 4.0 / camera.camerasize;
                 double randomy = pixelrand(re) - 4.0 / camera.camerasize;
 
-                double x = (2.0 / (double)camera.camerasize) * (Pixely - (double)(camera.camerasize / 2.0)) + randomx;
+                double x = -(2.0 / (double)camera.camerasize) * (Pixely - (double)(camera.camerasize / 2.0)) + randomx;
                 double y = -(2.0 / (double)camera.camerasize) * (Pixelx - (double)(camera.camerasize / 2.0)) + randomy;
 
                 glm::vec3 pixelPos = glm::vec3(0.0, x, y) - camera.eye;
                 ray sceneray(camera.eye, pixelPos);
-                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
+                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
+                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
             }
 
             if (color.x > largestcol) {
@@ -158,6 +166,7 @@ int main()
 
             //färgen dividerad med största färgen
             camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+
 
             //Testar att skriva ut till ppm fil
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';

@@ -1,4 +1,5 @@
 #include "ray.h"
+#include <iostream>
 	
 	//default constructor
 	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color, ray* previousray, ray* nextray)
@@ -143,7 +144,7 @@
 
 		glm::vec3 randvec;
 		//blir nullptr ibland
-		if (nearestObject != nullptr) {
+
 			//recursive function
 			if (reflectionamount > 0) {
 				randvec = Gauss(nearestObject->Normal());
@@ -157,7 +158,7 @@
 				combinedcolor += lightcolor;
 				return combinedcolor;
 			}
-		}
+		
 
 		return combinedcolor;
 	}
@@ -251,4 +252,51 @@
 		shadow = glm::vec3(shadow.x / (shadowamount / 6.0), shadow.y / (shadowamount / 6.0), shadow.z / (shadowamount / 6.0) );
 
 		return shadow;
+	}
+
+	glm::vec3 ray::Shootray(ray& inray, int reflectionamount, Scene& scene) {
+		
+		glm::vec3 intersec;
+		std::shared_ptr<Object> nearestObject = nullptr;
+		//high max values outside of scene
+		float nearestColl = 10000000000000000000000000000000000000000.0;
+		double t = 10000000000000000000000.0;
+
+		glm::vec3 color(0, 0, 0);
+
+		for (int i = 0; i < scene.getObjects().size(); i++)
+		{
+			if (scene.getObjects()[i]->collision(inray, intersec)) {
+
+				t = glm::length(intersec - inray.origin);
+
+
+				//std::cout << "closest object is " << i << '\n';
+
+				if (t < nearestColl)	
+				{	
+					//flytta utanför mer effektivt
+					nearestColl = t;
+
+					end = intersec;
+
+					if (scene.getObjects()[i]->getMaterial() == 1) {
+
+						glm::vec3 d_o = dir - 2.0f * glm::dot(dir, scene.getObjects()[i]->Normal()) * scene.getObjects()[i]->Normal();
+						ray mirror(end, d_o);
+						color = mirror.Shootray(mirror, reflectionamount, scene);
+
+						delete this->next;
+						this->next = nullptr;
+					}
+					else
+					{
+						color = scene.getObjects()[i]->getColor();
+					}
+				}
+			}
+		}
+
+
+		return color;
 	}

@@ -40,11 +40,12 @@ public:
 	Sphere() = default;
 
 	//sphere constructor
-	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor, int material) {
+	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor, int inmaterial) {
 		radius = rad;
 		position = pos;
 		color = spherecolor;
 		normal = Normal();
+		material = inmaterial;
 	}
 
 	bool intersecNormal(ray& ray) override;
@@ -68,13 +69,14 @@ public:
 	Triangle() = default;
 
 	//triangle constructor
-	Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 trianglecolor, int material) {
+	Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 trianglecolor, int inmaterial) {
 		//the corners of the triangle
 		points[0] = point1;
 		points[1] = point2;
 		points[2] = point3;
 		normal = Normal();
 		color = trianglecolor;
+		material = inmaterial;
 	}
 
 	bool intersecNormal(ray& ray) override;
@@ -96,7 +98,7 @@ public:
 	Rectangle() = default;
 
 	//rectangle constructor
-	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor, int material) {
+	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor, int inmaterial) {
 		//corners of the rectangle
 		points[0] = point1;
 		points[1] = point2;
@@ -104,6 +106,7 @@ public:
 		points[3] = point4;
 		normal = Normal();
 		color = rectanglecolor;
+		material = inmaterial;
 	}
 
 	bool intersecNormal(ray& ray) override;
