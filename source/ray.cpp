@@ -96,26 +96,27 @@
 		//maybe wrong
 		glm::vec3 combinedcolor(0,0,0);
 
-		for (int i = 0; i < scene.getObjects().size(); i++)
+		for (int j = 0; j < scene.getObjects().size(); j++)
 		{
-			if (scene.getObjects()[i]->collision(inray, intersec)) {
+			if (scene.getObjects()[j]->collision(inray, intersec)) {
 
 				t = glm::length(intersec - inray.origin);
 
 				if (t < nearestColl)
 				{
-						nearestObject = scene.getObjects()[i];
+						nearestObject = scene.getObjects()[j];
 						nearestColl = t;
 						inray.end = intersec;
 
 						//check lights
 						for (int i = 0; i < scene.getLights().size(); i++)
-						{
+						{	
+
 							//check material room tba
 							if (nearestObject->getMaterial() == 1)
 							{
 								glm::vec3 newdir = this->direction() - ((glm::vec3(2.0, 2.0, 2.0) * glm::dot(direction(), nearestObject->Normal()) * nearestObject->Normal()));
-								ray newray(this->end, newdir);
+								ray newray(intersec, newdir);
 								glm::vec3 reflectedcolor = newray.Raycolorcalc(newray, reflectionamount - 1, scene);
 
 								delete this->next;
@@ -130,11 +131,12 @@
 							else {
 								//shadowray
 								//lite skumt
+								//reflectionamount -= 1;
 								combinedcolor = (nearestObject->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(nearestObject, scene.getLights()[i], scene);
 							}
 
 						}
-
+						
 				}
 				this->end = intersec;
 			}
@@ -165,7 +167,7 @@
 
 	glm::vec3 ray::Shadowray(std::shared_ptr<Object> object, Light& light, Scene scene) {
 
-		glm::vec3 shadow(0, 0, 0);
+		glm::vec3 shadow(0.0, 0.0, 0.0);
 		glm::vec3 lightp = light.Randompoint();
 
 		//skumt namn
@@ -277,7 +279,6 @@
 				{	
 					//flytta utanför mer effektivt
 					nearestColl = t;
-
 					end = intersec;
 
 					if (scene.getObjects()[i]->getMaterial() == 1) {
@@ -290,8 +291,9 @@
 						this->next = nullptr;
 					}
 					else
-					{
-						color = scene.getObjects()[i]->getColor();
+					{	
+						color = (scene.getObjects()[i]->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(scene.getObjects()[i], scene.getLights()[i], scene);
+						//color = scene.getObjects()[i]->getColor();
 					}
 				}
 			}

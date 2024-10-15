@@ -40,7 +40,7 @@ public:
 	Sphere() = default;
 
 	//sphere constructor
-	Sphere(double rad, glm::vec3 pos, glm::vec3 spherecolor, int inmaterial) {
+	Sphere(const double& rad, glm::vec3& pos, glm::vec3& spherecolor, int inmaterial) {
 		radius = rad;
 		position = pos;
 		color = spherecolor;
@@ -69,7 +69,7 @@ public:
 	Triangle() = default;
 
 	//triangle constructor
-	Triangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 trianglecolor, int inmaterial) {
+	Triangle(glm::vec3& point1, glm::vec3& point2, glm::vec3& point3, glm::vec3 trianglecolor, int inmaterial) {
 		//the corners of the triangle
 		points[0] = point1;
 		points[1] = point2;
@@ -98,7 +98,7 @@ public:
 	Rectangle() = default;
 
 	//rectangle constructor
-	Rectangle(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,glm::vec3 point4, glm::vec3 rectanglecolor, int inmaterial) {
+	Rectangle(glm::vec3& point1, glm::vec3& point2, glm::vec3& point3,glm::vec3& point4, glm::vec3& rectanglecolor, int inmaterial) {
 		//corners of the rectangle
 		points[0] = point1;
 		points[1] = point2;

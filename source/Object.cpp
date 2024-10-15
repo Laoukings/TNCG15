@@ -23,11 +23,11 @@ bool Sphere::collision(ray& ray, glm::vec3& intersectionpoint) {
 	//not done yet only checks if any collision not if the collision happens once or twice
 
 	//check both the case of 1 intersection and 2
-	if (abs(arg) < 0.001) {
+	if (abs(arg) < 0.01) {
 		intersectionpoint = ray.originpoint() + (ray.direction() * glm::vec3(-c2/2.0, -c2 / 2.0, -c2 / 2.0));
 		normal = glm::normalize(intersectionpoint - position);
 		return true;
-	}
+	} 
 
 	if (arg > 0.0) {
 		//exception om inte i denna
@@ -108,7 +108,7 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
 		double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
 
-		if (((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0)) && a + b > 1)
+		if (((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0)) && a + b < 1)
 		{
 			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
 			return true;

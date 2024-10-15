@@ -29,7 +29,7 @@ int main()
 
     //massor testobject
     Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1),0);
-    Sphere secondSphere(1.0, glm::vec3(10.0, -2.0, 0.0), glm::vec3(0, 0.5, 1),0);
+    Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, -3.0), glm::vec3(0, 0.5, 1),0);
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -66,12 +66,12 @@ int main()
     Triangle floortri1(f6,f2,f1, glm::vec3(1.0, 0, 0),3);
     Triangle floortri2(f5,f4,f3, glm::vec3(1.0, 0, 0),3);
     
-    Rectangle rwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),1);
+    Rectangle rwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),3);
     Rectangle lwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
     Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0), 3);
-    Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 3);
-    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 0),3);
-    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0),3);
+    Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
+    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 1.0),3);
+    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(0.5, 0.5, 0.5),3);
 
     //coll test
     //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
@@ -97,8 +97,8 @@ int main()
   
 
     //testa runt lite
-    Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
-    //Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
+    //Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
+    Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
 
     //normalerna är motsatta
@@ -119,7 +119,7 @@ int main()
     std::uniform_real_distribution<double> pixelrand(pixellowerbound, pixelupperbound);
     std::default_random_engine re;
 
-    double largestcol = 255;
+    double largestcol = 0.0;
 
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild
