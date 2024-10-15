@@ -3,7 +3,10 @@
 	
 	//default constructor
 	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color, ray* previousray, ray* nextray)
-	: origin(originpoint), dir(direction), color(color), previous(previousray), next(nextray) {}
+	: origin(originpoint), color(color), previous(previousray), next(nextray) {
+	
+		dir = glm::normalize(direction);
+	}
 
 	//gauss random funktion
 	glm::vec3 ray::Gauss(glm::vec3 normal) {
@@ -94,7 +97,8 @@
 		//}
 
 		//maybe wrong
-		glm::vec3 combinedcolor(0,0,0);
+		glm::vec3 combinedcolor;
+		glm::vec3 nearcolor(0.0,0.0,0.0);
 
 		for (int j = 0; j < scene.getObjects().size(); j++)
 		{
@@ -122,23 +126,23 @@
 								delete this->next;
 								this->next = nullptr;
 
-								combinedcolor += reflectedcolor;
+								nearcolor += reflectedcolor;
 							}
 							else if (nearestObject->getMaterial() == 2) {
-								combinedcolor = scene.getLights()[i].Color();
-								return combinedcolor;
+								nearcolor = scene.getLights()[i].Color();
+								return nearcolor;
 							}
 							else {
 								//shadowray
 								//lite skumt
-								//reflectionamount -= 1;
-								combinedcolor = (nearestObject->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(nearestObject, scene.getLights()[i], scene);
+								//combinedcolor = (nearestObject->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(nearestObject, scene.getLights()[i], scene);
+								nearcolor = (nearestObject->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(nearestObject, scene.getLights()[i], scene);
 							}
 
 						}
-						
+						end = intersec;
 				}
-				this->end = intersec;
+
 			}
 		}
 
@@ -147,6 +151,7 @@
 		glm::vec3 randvec;
 		//blir nullptr ibland
 
+		
 			//recursive function
 			if (reflectionamount > 0) {
 				randvec = Gauss(nearestObject->Normal());
@@ -157,10 +162,13 @@
 				delete this->next;
 				this->next = nullptr;
 
-				combinedcolor += lightcolor;
+				combinedcolor = nearcolor + lightcolor;
 				return combinedcolor;
 			}
+			
 		
+
+		combinedcolor = nearcolor;
 
 		return combinedcolor;
 	}
@@ -168,7 +176,6 @@
 	glm::vec3 ray::Shadowray(std::shared_ptr<Object> object, Light& light, Scene scene) {
 
 		glm::vec3 shadow(0.0, 0.0, 0.0);
-		glm::vec3 lightp = light.Randompoint();
 
 		//skumt namn
 		double darkper = 1.0;
@@ -181,46 +188,12 @@
 		for (int j = 0; j < shadowamount; j++)
 		{	
 			//variables
+			glm::vec3 lightp = light.Randompoint();
 			glm::vec3 distance = lightp - end;
 			double distancelength = glm::length(distance);
 			double maxlength = std::numeric_limits<double>::max();
 
 			ray shadowray(end, glm::normalize(distance));
-
-			//väldigt osäker på pointers kan leda till fel
-			//for (int i = 0; i < scene.getTriangles().size(); i++)
-			//{
-			//	if (&scene.getTriangles()[i] != object && scene.getTriangles()[i].collision(shadowray,collisionpoint)) {
-			//		//if the length to the object is shorther than where it should hit
-			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-			//		{
-			//			maxlength = glm::length(collisionpoint - end) + 0.001;
-			//		}
-			//	}
-			//	
-			//}
-
-			//for (int i = 0; i < scene.getRectangle().size(); i++)
-			//{
-			//	if (&scene.getRectangle()[i] != object && scene.getRectangle()[i].collision(shadowray, collisionpoint)) {
-			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-			//		{
-			//			maxlength = glm::length(collisionpoint - end) + 0.001;
-			//		}
-			//	}
-			//	
-			//}
-
-			//for (int i = 0; i < scene.getSpheres().size(); i++)
-			//{
-			//	if (&scene.getSpheres()[i] != object && scene.getSpheres()[i].collision(shadowray, collisionpoint)) {
-			//		if (glm::length(collisionpoint - end) + 0.001 < maxlength)
-			//		{
-			//			maxlength = glm::length(collisionpoint - end) + 0.001;
-			//		}
-			//	}
-			//
-			//}
 
 
 			for (int i = 0; i < scene.getObjects().size(); i++)
@@ -281,7 +254,11 @@
 					nearestColl = t;
 					end = intersec;
 
-					if (scene.getObjects()[i]->getMaterial() == 1) {
+					if(scene.getObjects()[i]->getMaterial() == 0){
+
+						color = scene.getObjects()[i]->getColor();
+
+					} else if (scene.getObjects()[i]->getMaterial() == 1) {
 
 						glm::vec3 d_o = dir - 2.0f * glm::dot(dir, scene.getObjects()[i]->Normal()) * scene.getObjects()[i]->Normal();
 						ray mirror(end, d_o);
@@ -290,10 +267,13 @@
 						delete this->next;
 						this->next = nullptr;
 					}
-					else
+					else if(scene.getObjects()[i]->getMaterial() == 2)
 					{	
-						color = (scene.getObjects()[i]->getColor() * glm::vec3(0.05, 0.05, 0.05)) + inray.Shadowray(scene.getObjects()[i], scene.getLights()[i], scene);
-						//color = scene.getObjects()[i]->getColor();
+						color = scene.getLights()[0].Color();
+					}
+					else if (scene.getObjects()[i]->getMaterial() == 3) {
+
+						color = scene.getObjects()[i]->getColor();
 					}
 				}
 			}
@@ -301,4 +281,88 @@
 
 
 		return color;
+	}
+
+	glm::vec3 ray::Raylist(Scene& scene, glm::vec3 input, ray* prevray) {
+		//assign object to ray
+
+		previous = prevray;
+		glm::vec3 intersec;
+		//high max values outside of scene
+		float nearestColl = 10000000000000000000000000000000000000000.0;
+		double t = 10000000000000000000000.0;
+
+		glm::vec3 importance = input;
+
+		for (int i = 0; i < scene.getObjects().size(); i++)
+		{
+			if (scene.getObjects()[i]->collision(*this, intersec)) {
+
+				t = glm::length(intersec - origin);
+
+				if (t < nearestColl) {
+					nearestColl = t;
+					end = intersec;
+					surface = scene.getObjects()[i];
+				}
+			}
+		}
+
+		//create new ray depending on material
+		//Mirror never terminates
+		if (surface->getMaterial() == 1) {
+
+			glm::vec3 d_o = dir - 2.0f * glm::dot(dir, surface->Normal()) * surface->Normal();
+			ray mirror(end, d_o);
+			next = &mirror;
+			mirror.Raylist(scene, importance, this);
+		}
+		
+		//room and light always terminate
+		if (surface->getMaterial() == 2) {
+			terminateRay(scene);
+		}
+		else if(surface->getMaterial() == 3) {
+			terminateRay(scene);
+		}
+		
+		//wrong random function
+		int num = rand();
+
+		//check if ray terminates
+		if (surface->getMaterial() == 0 && num%2 == 0) {
+			glm::vec3 randvec = Gauss(surface->Normal());
+			ray lambert(end, randvec);
+			next = &lambert;
+			lambert.Raylist(scene, importance, this);
+		}
+		else {
+			terminateRay(scene);
+		}
+
+		return importance;
+	}
+
+	glm::vec3 ray::terminateRay(Scene& scene) {
+
+		glm::vec3 color;
+
+		while (previous != nullptr) {
+			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
+				Shadowray(surface, scene.getLights()[0], scene);
+			}
+			else if (surface->getMaterial() == 1) {
+
+			}
+			else if (surface->getMaterial() == 2) {
+				color = scene.getLights()[0].Color();
+			}
+			surface = previous->surface;
+			previous = previous->previous;
+			next = this;
+			delete this->next;
+			this->next = nullptr;
+		}
+
+		return glm::vec3(0.0, 0.0, 0.0);
 	}

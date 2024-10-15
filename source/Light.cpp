@@ -11,13 +11,13 @@ Light::Light(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 poi
 
 //the color of the light
 glm::vec3 Light::Color() {
-	return color;
+	return position.getColor();
 }
 
 //the normal of the light
 glm::vec3 Light::Normal() {
 	//return position.Normal();
-	return position.Normal();
+	return glm::vec3(0,0,-1);
 }
 
 double Light::Area() {

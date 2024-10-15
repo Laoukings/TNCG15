@@ -97,8 +97,8 @@ int main()
   
 
     //testa runt lite
-    //Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
-    Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
+    Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
+    //Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
 
     //normalerna är motsatta
@@ -146,10 +146,12 @@ int main()
                 double x = -(2.0 / (double)camera.camerasize) * (Pixely - (double)(camera.camerasize / 2.0)) + randomx;
                 double y = -(2.0 / (double)camera.camerasize) * (Pixelx - (double)(camera.camerasize / 2.0)) + randomy;
 
+
+                //-x och -y
                 glm::vec3 pixelPos = glm::vec3(0.0, x, y) - camera.eye;
                 ray sceneray(camera.eye, pixelPos);
-                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
-                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
+                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
+                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
             }
 
             if (color.x > largestcol) {
@@ -165,7 +167,8 @@ int main()
             //camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
 
             //färgen dividerad med största färgen
-            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
 
 
             //Testar att skriva ut till ppm fil

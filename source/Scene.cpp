@@ -21,4 +21,5 @@ void Scene::addRectangle(Rectangle object) {
 //add a light into the scene
 void Scene::addLight(Light light) {
 	sceneLights.push_back(light);
+	Objects.push_back(std::make_shared<Rectangle>(light.position));
 }

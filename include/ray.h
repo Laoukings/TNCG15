@@ -11,6 +11,8 @@ public:
 	//calc color in pixel
 	glm::vec3 Raycolorcalc(ray& inray ,int reflectionamount, Scene& scene);
 	glm::vec3 Shootray(ray& inray, int reflectionamount, Scene& scene);
+	glm::vec3 Raylist(Scene& scene, glm::vec3 input, ray* prevray);
+	glm::vec3 terminateRay(Scene& scene);
 	glm::vec3 Gauss(glm::vec3 normal);
 	glm::vec3 Shadowray(std::shared_ptr<Object> object, Light& light, Scene scene);
 
@@ -21,12 +23,13 @@ public:
 
 	ray* previous;
 	ray* next;
+	std::shared_ptr<Object> surface;
 
 private:
 	//variables
 	glm::vec3 origin;
 	glm::vec3 dir;
-	glm::vec3 end = glm::vec3(0,0,0);
+	glm::vec3 end;
 	glm::vec3 color;
 
 };
