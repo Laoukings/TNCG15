@@ -31,8 +31,8 @@ bool Sphere::collision(ray& ray, glm::vec3& intersectionpoint) {
 
 	if (arg > 0.0) {
 		//exception om inte i denna
-		double tplus = (sqrt(arg) - c2) / (2.0 * c1);
-		double tminus = (-sqrt(arg) - c2) / (2.0 * c1);
+		double tplus = (-c2 + sqrt(arg)) / (2.0 * c1);
+		double tminus = (-c2 - sqrt(arg)) / (2.0 * c1);
 		double t;
 
 		//check which t is smaller

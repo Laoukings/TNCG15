@@ -167,13 +167,13 @@
 			}
 			
 		
-
+		//ibland är nearcolor 0.0,0.0,0.0
 		combinedcolor = nearcolor;
 
 		return combinedcolor;
 	}
 
-	glm::vec3 ray::Shadowray(std::shared_ptr<Object> object, Light& light, Scene scene) {
+	glm::vec3 ray::Shadowray(std::shared_ptr<Object>& object, Light& light, Scene scene) {
 
 		glm::vec3 shadow(0.0, 0.0, 0.0);
 
@@ -199,6 +199,7 @@
 			for (int i = 0; i < scene.getObjects().size(); i++)
 			{
 				if (scene.getObjects()[i] != object && scene.getObjects()[i]->collision(shadowray,collisionpoint)) {
+
 					if (glm::length(collisionpoint - end) + 0.001 < maxlength)
 						{
 							maxlength = glm::length(collisionpoint - end) + 0.001;
@@ -223,7 +224,7 @@
 			shadow += glm::vec3(lambda, lambda, lambda);
 		}
 
-		//set the calue of shadow
+		//set the value of shadow
 		shadow = glm::vec3(shadow.x / (shadowamount / 6.0), shadow.y / (shadowamount / 6.0), shadow.z / (shadowamount / 6.0) );
 
 		return shadow;
@@ -292,6 +293,7 @@
 		float nearestColl = 10000000000000000000000000000000000000000.0;
 		double t = 10000000000000000000000.0;
 
+		glm::vec3 color(0.0, 0.0, 0.0);
 		glm::vec3 importance = input;
 
 		for (int i = 0; i < scene.getObjects().size(); i++)
@@ -308,6 +310,10 @@
 			}
 		}
 
+		if(surface == nullptr){
+			return glm::vec3(0.0, 0.0, 0.0);
+		}
+
 		//create new ray depending on material
 		//Mirror never terminates
 		if (surface->getMaterial() == 1) {
@@ -320,10 +326,10 @@
 		
 		//room and light always terminate
 		if (surface->getMaterial() == 2) {
-			terminateRay(scene);
+			color = terminateRay(scene);
 		}
 		else if(surface->getMaterial() == 3) {
-			terminateRay(scene);
+			color = terminateRay(scene);
 		}
 		
 		//wrong random function
@@ -334,25 +340,26 @@
 			glm::vec3 randvec = Gauss(surface->Normal());
 			ray lambert(end, randvec);
 			next = &lambert;
-			lambert.Raylist(scene, importance, this);
+			lambert.Raylist(scene, importance * surface->getColor(), this);
 		}
 		else {
-			terminateRay(scene);
+			color = terminateRay(scene);
 		}
 
-		return importance;
+		return color;
 	}
 
 	glm::vec3 ray::terminateRay(Scene& scene) {
 
-		glm::vec3 color;
+		glm::vec3 color(1.0,1.0,1.0);
 
 		while (previous != nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
-				Shadowray(surface, scene.getLights()[0], scene);
+				//Shadowray(surface, scene.getLights()[0], scene);
+				color = surface->getColor();
 			}
 			else if (surface->getMaterial() == 1) {
-
+				
 			}
 			else if (surface->getMaterial() == 2) {
 				color = scene.getLights()[0].Color();
@@ -360,9 +367,22 @@
 			surface = previous->surface;
 			previous = previous->previous;
 			next = this;
-			delete this->next;
+			//delete next;
 			this->next = nullptr;
 		}
 
-		return glm::vec3(0.0, 0.0, 0.0);
+		if (previous == nullptr) {
+			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
+				//Shadowray(surface, scene.getLights()[0], scene);
+				color = surface->getColor();
+			}
+			else if (surface->getMaterial() == 1) {
+
+			}
+			else if (surface->getMaterial() == 2) {
+				color = scene.getLights()[0].Color();
+			}
+		}
+
+		return color;
 	}
