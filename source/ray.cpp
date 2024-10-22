@@ -1,5 +1,6 @@
 #include "ray.h"
 #include <iostream>
+
 	
 	//default constructor
 	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color, ray* previousray, ray* nextray)
@@ -289,10 +290,10 @@
 
 		previous = prevray;
 		glm::vec3 intersec;
+
 		//high max values outside of scene
 		float nearestColl = 10000000000000000000000000000000000000000.0;
 		double t = 10000000000000000000000.0;
-
 		glm::vec3 color(0.0, 0.0, 0.0);
 		glm::vec3 importance = input;
 
@@ -351,15 +352,13 @@
 
 	glm::vec3 ray::terminateRay(Scene& scene) {
 
-		glm::vec3 color(1.0,1.0,1.0);
+		glm::vec3 color(0.0,0.0,0.0);
+		
 
 		while (previous != nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
 				//Shadowray(surface, scene.getLights()[0], scene);
 				color = surface->getColor();
-			}
-			else if (surface->getMaterial() == 1) {
-				
 			}
 			else if (surface->getMaterial() == 2) {
 				color = scene.getLights()[0].Color();
@@ -376,13 +375,11 @@
 				//Shadowray(surface, scene.getLights()[0], scene);
 				color = surface->getColor();
 			}
-			else if (surface->getMaterial() == 1) {
-
-			}
 			else if (surface->getMaterial() == 2) {
 				color = scene.getLights()[0].Color();
 			}
 		}
+	
 
 		return color;
 	}
