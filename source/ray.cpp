@@ -327,10 +327,10 @@
 		
 		//room and light always terminate
 		if (surface->getMaterial() == 2) {
-			color = terminateRay(scene);
+			return color = terminateRay(scene);
 		}
 		else if(surface->getMaterial() == 3) {
-			color = terminateRay(scene);
+			return color = terminateRay(scene);
 		}
 		
 		//wrong random function
@@ -344,7 +344,7 @@
 			lambert.Raylist(scene, importance * surface->getColor(), this);
 		}
 		else {
-			color = terminateRay(scene);
+			return color = terminateRay(scene);
 		}
 
 		return color;
@@ -355,9 +355,9 @@
 		glm::vec3 color(0.0,0.0,0.0);
 		
 
-		while (previous != nullptr) {
+		while (previous != nullptr && next == nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
-				//Shadowray(surface, scene.getLights()[0], scene);
+				//color = Shadowray(surface, scene.getLights()[0], scene);
 				color = surface->getColor();
 			}
 			else if (surface->getMaterial() == 2) {
@@ -372,7 +372,7 @@
 
 		if (previous == nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
-				//Shadowray(surface, scene.getLights()[0], scene);
+				//color = Shadowray(surface, scene.getLights()[0], scene);
 				color = surface->getColor();
 			}
 			else if (surface->getMaterial() == 2) {
