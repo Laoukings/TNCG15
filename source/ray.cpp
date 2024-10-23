@@ -285,7 +285,7 @@
 		return color;
 	}
 
-	glm::vec3 ray::Raylist(Scene& scene, glm::vec3 input, ray* prevray) {
+	glm::vec3 ray::Raylist(Scene& scene, glm::vec3 input, ray *prevray) {
 		//assign object to ray
 
 		previous = prevray;
@@ -294,7 +294,7 @@
 		//high max values outside of scene
 		float nearestColl = 10000000000000000000000000000000000000000.0;
 		double t = 10000000000000000000000.0;
-		glm::vec3 color(0.0, 0.0, 0.0);
+		glm::vec3 listcolor(0.0, 0.0, 0.0);
 		glm::vec3 importance = input;
 
 		for (int i = 0; i < scene.getObjects().size(); i++)
@@ -324,13 +324,13 @@
 			next = &mirror;
 			mirror.Raylist(scene, importance, this);
 		}
-		
+
 		//room and light always terminate
 		if (surface->getMaterial() == 2) {
-			return color = terminateRay(scene);
+			return listcolor = terminateRay(scene);
 		}
 		else if(surface->getMaterial() == 3) {
-			return color = terminateRay(scene);
+			return listcolor = terminateRay(scene);
 		}
 		
 		//wrong random function
@@ -344,42 +344,41 @@
 			lambert.Raylist(scene, importance * surface->getColor(), this);
 		}
 		else {
-			return color = terminateRay(scene);
+			return listcolor = lastray.terminateRay(scene);
 		}
 
-		return color;
+		return listcolor;
 	}
 
 	glm::vec3 ray::terminateRay(Scene& scene) {
 
-		glm::vec3 color(0.0,0.0,0.0);
+		glm::vec3 terminatecolor(1.0,1.0,1.0);
 		
 
-		while (previous != nullptr && next == nullptr) {
+		while (previous != nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
 				//color = Shadowray(surface, scene.getLights()[0], scene);
-				color = surface->getColor();
+				terminatecolor = surface->getColor();
 			}
 			else if (surface->getMaterial() == 2) {
-				color = scene.getLights()[0].Color();
+				terminatecolor = scene.getLights()[0].Color();
 			}
 			surface = previous->surface;
 			previous = previous->previous;
-			next = this;
-			//delete next;
-			this->next = nullptr;
+			//delete this->next;
+			//this->next = nullptr;
 		}
 
 		if (previous == nullptr) {
 			if (surface->getMaterial() == 0 || surface->getMaterial() == 3) {
 				//color = Shadowray(surface, scene.getLights()[0], scene);
-				color = surface->getColor();
+				terminatecolor = surface->getColor();
 			}
 			else if (surface->getMaterial() == 2) {
-				color = scene.getLights()[0].Color();
+				terminatecolor = scene.getLights()[0].Color();
 			}
 		}
 	
 
-		return color;
+		return terminatecolor;
 	}
