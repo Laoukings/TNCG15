@@ -8,7 +8,7 @@ public:
 	//default constructor with all needed elements
 	ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color = glm::vec3(0.0,0.0,0.0), ray* previousray = nullptr, ray* nextray = nullptr);
 
-	ray(glm::vec3 originpoint, glm::vec3 direction, Scene scene);
+	ray(glm::vec3 originpoint, glm::vec3 direction, Scene& scene);
 
 	//calc color in pixel
 	glm::vec3 Raycolorcalc(ray& inray ,int reflectionamount, Scene& scene);
@@ -22,6 +22,7 @@ public:
 	glm::vec3 originpoint() { return origin; }
 	glm::vec3 direction() { return dir; }
 	glm::vec3 raycolor() { return importance; }
+	glm::vec3 recursivecolor();
 
 	ray *previous = nullptr;
 	ray *next = nullptr;

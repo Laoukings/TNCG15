@@ -9,7 +9,7 @@
 		dir = glm::normalize(direction);
 	}
 
-	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene scene) {
+	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene& scene) {
 
 		//initialized variabler
 		origin = originpoint;
@@ -18,16 +18,18 @@
 		//variables for collision
 		float nearestColl = 10000000000000000000000000000000000000000.0;
 		double t = 10000000000000000000000.0;
+		glm::vec3 intersec(0.0, 0.0, 0.0);
 
 		for (int i = 0; i < scene.getObjects().size(); i++)
 		{	
-			//end är initialized som 0,0,0 om den inte träffar något kommer det bli fel
-			if (scene.getObjects()[i]->collision(*this, end)) {
 
-				t = glm::length(end - origin);
+			if (scene.getObjects()[i]->collision(*this, intersec)) {
+
+				t = glm::length(intersec - origin);
 
 				if (t < nearestColl) {
 					nearestColl = t;
+					end = intersec;
 					surface = scene.getObjects()[i];
 				}
 			}
@@ -47,8 +49,8 @@
 				}
 			}
 			else if (surface->getMaterial() == 1) {
-				glm::vec3 d_o = dir - 2.0f * glm::dot(dir, surface->Normal()) * surface->Normal();
-				ray mirror(end, d_o);
+				glm::vec3 d_o = this->direction() - glm::vec3(2.0, 2.0, 2.0) * glm::dot(this->direction(), surface->Normal()) * surface->Normal();
+				ray mirror(end, d_o, scene);
 				next = &mirror;
 				mirror.previous = this;
 			}
@@ -58,12 +60,19 @@
 			else {
 				importance = surface->getColor();
 			}
-			if (previous != nullptr && previous->surface->getMaterial() == 1) {
-				previous->importance = importance;
-			}
 		}
-		
+	}
 
+	glm::vec3 ray::recursivecolor() {
+
+		while(next != nullptr) {
+
+			importance = next->importance;
+
+			next = next->next;
+		}
+
+		return importance;
 	}
 
 	//gauss random funktion

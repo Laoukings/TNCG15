@@ -70,8 +70,8 @@ int main()
     Rectangle lwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
     Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0), 3);
     Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
-    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 1.0, 1.0),3);
-    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(0.5, 0.5, 0.5),3);
+    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 0.5, 0.0),3);
+    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0.0),3);
 
     //coll test
     //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
@@ -152,7 +152,7 @@ int main()
                 ray sceneray(camera.eye, pixelPos);
 
                 ray recursray(camera.eye, pixelPos, scene);
-                color += glm::vec3(255.99, 255.99, 255.99) * recursray.raycolor();
+                color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
 
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
