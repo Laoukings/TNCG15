@@ -4,9 +4,66 @@
 	
 	//default constructor
 	ray::ray(glm::vec3 originpoint, glm::vec3 direction, glm::vec3 color, ray* previousray, ray* nextray)
-	: origin(originpoint), color(color), previous(previousray), next(nextray) {
+	: origin(originpoint), importance(color), previous(previousray), next(nextray) {
 	
 		dir = glm::normalize(direction);
+	}
+
+	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene scene) {
+
+		//initialized variabler
+		origin = originpoint;
+		dir = glm::normalize(direction);
+
+		//variables for collision
+		float nearestColl = 10000000000000000000000000000000000000000.0;
+		double t = 10000000000000000000000.0;
+
+		for (int i = 0; i < scene.getObjects().size(); i++)
+		{	
+			//end är initialized som 0,0,0 om den inte träffar något kommer det bli fel
+			if (scene.getObjects()[i]->collision(*this, end)) {
+
+				t = glm::length(end - origin);
+
+				if (t < nearestColl) {
+					nearestColl = t;
+					surface = scene.getObjects()[i];
+				}
+			}
+		}
+
+		if (surface != nullptr) {
+			if (surface->getMaterial() == 0) {
+				int num = rand();
+				if (num%2 == 0) {
+					glm::vec3 randvec = Gauss(surface->Normal());
+					ray lambert(end, randvec, scene);
+					next = &lambert;
+					lambert.previous = this;
+				}
+				else {
+					importance = surface->getColor();
+				}
+			}
+			else if (surface->getMaterial() == 1) {
+				glm::vec3 d_o = dir - 2.0f * glm::dot(dir, surface->Normal()) * surface->Normal();
+				ray mirror(end, d_o);
+				next = &mirror;
+				mirror.previous = this;
+			}
+			else if (surface->getMaterial() == 2) {
+				importance = scene.getLights()[0].Color();
+			}
+			else {
+				importance = surface->getColor();
+			}
+			if (previous != nullptr && previous->surface->getMaterial() == 1) {
+				previous->importance = importance;
+			}
+		}
+		
+
 	}
 
 	//gauss random funktion
@@ -344,7 +401,7 @@
 			lambert.Raylist(scene, importance * surface->getColor(), this);
 		}
 		else {
-			return listcolor = lastray.terminateRay(scene);
+			return listcolor = terminateRay(scene);
 		}
 
 		return listcolor;
