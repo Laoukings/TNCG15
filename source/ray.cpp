@@ -9,11 +9,12 @@
 		dir = glm::normalize(direction);
 	}
 
-	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene& scene) {
+	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene& scene, glm::vec3 importans) {
 
 		//initialized variabler
 		origin = originpoint;
 		dir = glm::normalize(direction);
+		importance = importans;
 
 		//variables for collision
 		float nearestColl = 10000000000000000000000000000000000000000.0;
@@ -40,7 +41,8 @@
 				int num = rand();
 				if (num%2 == 0) {
 					glm::vec3 randvec = Gauss(surface->Normal());
-					ray lambert(end, randvec, scene);
+					importance *= surface->getColor();
+					ray lambert(end, randvec, scene, importance);
 					next = &lambert;
 					lambert.previous = this;
 				}
@@ -50,7 +52,7 @@
 			}
 			else if (surface->getMaterial() == 1) {
 				glm::vec3 d_o = this->direction() - glm::vec3(2.0, 2.0, 2.0) * glm::dot(this->direction(), surface->Normal()) * surface->Normal();
-				ray mirror(end, d_o, scene);
+				ray mirror(end, d_o, scene, importance);
 				next = &mirror;
 				mirror.previous = this;
 			}
@@ -65,14 +67,25 @@
 
 	glm::vec3 ray::recursivecolor() {
 
-		while(next != nullptr) {
+		//while(next != nullptr) {
+		//	importance = next->importance;
+		//	next = next->next;
+		//}
+		glm::vec3 radiance(1.0, 1.0, 1.0);
 
-			importance = next->importance;
-
+		while (next != nullptr) {
+			if (next->surface != nullptr) {
+				if (next->surface->getMaterial() == 2) {
+					radiance = next->surface->getColor();
+				}
+				else if (next->surface->getMaterial() == 0) {
+					radiance = next->surface->getColor();
+				}
+			}
 			next = next->next;
 		}
 
-		return importance;
+		return radiance;
 	}
 
 	//gauss random funktion

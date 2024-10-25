@@ -58,20 +58,20 @@ int main()
     glm::vec3 f5(0.0, 6.0, -5.0);
     glm::vec3 f6(10.0, 6.0, -5.0);
 
-    Rectangle roof(r5,r6,r3,r2,glm::vec3(0,0,1.0),3);
-    Triangle rooftri1(r2,r6,r1, glm::vec3(1.0, 0, 0),3);
-    Triangle rooftri2(r5,r3,r4, glm::vec3(1.0, 0, 0),3);
+    Rectangle roof(r5,r6,r3,r2,glm::vec3(0,0,1.0),0);
+    Triangle rooftri1(r2,r6,r1, glm::vec3(1.0, 0, 0),0);
+    Triangle rooftri2(r5,r3,r4, glm::vec3(1.0, 0, 0),0);
 
-    Rectangle floor(f2, f6, f3, f5, glm::vec3(0, 0, 1.0),3);
-    Triangle floortri1(f6,f2,f1, glm::vec3(1.0, 0, 0),3);
-    Triangle floortri2(f5,f4,f3, glm::vec3(1.0, 0, 0),3);
+    Rectangle floor(f2, f6, f3, f5, glm::vec3(0, 0, 1.0),0);
+    Triangle floortri1(f6,f2,f1, glm::vec3(1.0, 0, 0),0);
+    Triangle floortri2(f5,f4,f3, glm::vec3(1.0, 0, 0),0);
     
-    Rectangle rwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),3);
-    Rectangle lwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),3);
-    Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0), 3);
+    Rectangle rwall(r2,f2,r3,f3, glm::vec3(0, 1.0, 0),0);
+    Rectangle lwall(r5,f5,r6,f6, glm::vec3(0, 1.0, 0),0);
+    Rectangle rfarwall(f1, f2, r1, r2, glm::vec3(1.0, 1.0, 0), 0);
     Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
-    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 0.5, 0.0),3);
-    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0.0),3);
+    Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 0.5, 0.0),0);
+    Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0.0),0);
 
     //coll test
     //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
@@ -151,7 +151,7 @@ int main()
                 glm::vec3 pixelPos = glm::vec3(0.0, -x, -y) - camera.eye;
                 ray sceneray(camera.eye, pixelPos);
 
-                ray recursray(camera.eye, pixelPos, scene);
+                ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
                 color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
 
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
