@@ -4,6 +4,7 @@
 
 
 //Sphere
+//används inte
 bool Sphere::intersecNormal(ray& ray) {
 	return false;
 }

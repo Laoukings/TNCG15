@@ -47,7 +47,8 @@
 					lambert.previous = this;
 				}
 				else {
-					importance = surface->getColor();
+					//tänka mer på
+					importance *= surface->getColor();
 				}
 			}
 			else if (surface->getMaterial() == 1) {
@@ -57,6 +58,7 @@
 				mirror.previous = this;
 			}
 			else if (surface->getMaterial() == 2) {
+				//just nu tar de alltid första lampans färg
 				importance = scene.getLights()[0].Color();
 			}
 			else {
@@ -71,19 +73,45 @@
 		//	importance = next->importance;
 		//	next = next->next;
 		//}
+
 		glm::vec3 radiance(1.0, 1.0, 1.0);
 
-		while (next != nullptr) {
-			if (next->surface != nullptr) {
-				if (next->surface->getMaterial() == 2) {
-					radiance = next->surface->getColor();
-				}
-				else if (next->surface->getMaterial() == 0) {
-					radiance = next->surface->getColor();
-				}
-			}
+		if (next == nullptr) {
+			return radiance;
+		}
+		while (next->next != nullptr) {
+			//if (next->surface != nullptr) {
+			//	if (next->surface->getMaterial() == 2) {
+			//		radiance = next->surface->getColor();
+			//	}
+			//	else if (next->surface->getMaterial() == 0) {
+			//		radiance = next->surface->getColor();
+			//	}
+			//}
 			next = next->next;
 		}
+
+		ray* radianceray;
+		radianceray = next;
+		int shadowrayamount;
+
+		while (radianceray->previous != nullptr) {
+			if (radianceray->surface->getMaterial() == 0) {
+				radiance = radianceray->surface->getColor();
+			} else if (radianceray->surface->getMaterial() == 2) {
+				double omegacosx;
+				double omegacosy;
+				double d;
+				glm::vec3 Ny;
+				glm::vec3 Nx;
+				glm::vec3 di;
+				double Le;
+				int visibility;
+
+			}
+			radianceray = radianceray->previous;
+		}
+
 
 		return radiance;
 	}
