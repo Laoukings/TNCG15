@@ -152,7 +152,7 @@ int main()
                 ray sceneray(camera.eye, pixelPos);
 
                 ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
-                color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
+                color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor(scene);
 
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);

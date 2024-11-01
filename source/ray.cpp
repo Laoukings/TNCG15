@@ -65,9 +65,11 @@
 				importance = surface->getColor();
 			}
 		}
+
+
 	}
 
-	glm::vec3 ray::recursivecolor() {
+	glm::vec3 ray::recursivecolor(Scene& scene) {
 
 		//while(next != nullptr) {
 		//	importance = next->importance;
@@ -76,42 +78,86 @@
 
 		glm::vec3 radiance(1.0, 1.0, 1.0);
 
-		if (next == nullptr) {
-			return radiance;
-		}
-		while (next->next != nullptr) {
-			//if (next->surface != nullptr) {
-			//	if (next->surface->getMaterial() == 2) {
-			//		radiance = next->surface->getColor();
-			//	}
-			//	else if (next->surface->getMaterial() == 0) {
-			//		radiance = next->surface->getColor();
-			//	}
-			//}
+		//if (next == nullptr) {
+		//	return radiance;
+		//}
+		//while (next->next != nullptr) {
+		//	//if (next->surface != nullptr) {
+		//	//	if (next->surface->getMaterial() == 2) {
+		//	//		radiance = next->surface->getColor();
+		//	//	}
+		//	//	else if (next->surface->getMaterial() == 0) {
+		//	//		radiance = next->surface->getColor();
+		//	//	}
+		//	//}
+		//	next = next->next;
+		//}
+
+		ray* dummy = this;
+
+		while (next != nullptr) {
+			dummy = next;
 			next = next->next;
 		}
 
-		ray* radianceray;
-		radianceray = next;
-		int shadowrayamount;
+		ray* radianceray = dummy;
 
-		while (radianceray->previous != nullptr) {
-			if (radianceray->surface->getMaterial() == 0) {
-				radiance = radianceray->surface->getColor();
-			} else if (radianceray->surface->getMaterial() == 2) {
-				double omegacosx;
-				double omegacosy;
-				double d;
-				glm::vec3 Ny;
-				glm::vec3 Nx;
-				glm::vec3 di;
-				double Le;
-				int visibility;
 
+		int shadowrayamount = 5;
+		//vet inte om den har något bestämt värde
+		double Le = 3200.0;
+		double lightvalue = 0.0;
+	
+			while (radianceray->previous != nullptr) {
+				if (radianceray->surface != nullptr) {
+
+					if (radianceray->surface->getMaterial() == 0) {
+						for (int i = 0; scene.getLights().size() > i; i++) {
+							double sum = 0.0;
+							for (int j = 0; j < shadowrayamount; j++)
+							{
+								glm::vec3 pointonlight = scene.getLights()[i].Randompoint();
+								ray shadowray(radianceray->end, pointonlight - radianceray->end);
+								glm::vec3 intersec;
+								//kanske borde vara abs
+								double l = glm::length(pointonlight - radianceray->end);
+								int V = 1;
+
+								for (int n = 0; n < scene.getObjects().size(); n++)
+								{	//vet inte hur den hanterar om objektet är ljudet eftersom den tekniskt sätt kommer collida med det alltid
+									if (&scene.getObjects()[n] != &surface && scene.getObjects()[n]->collision(shadowray, intersec)) {
+										//kanske borde vara abs
+										if (glm::length(intersec - shadowray.originpoint()) < l) {
+											V = 0;
+
+										}
+									}
+								}
+
+								glm::vec3 di = pointonlight - radianceray->end;
+								glm::vec3 Ny = scene.getLights()[i].Normal();
+								glm::vec3 Nx = radianceray->surface->Normal();
+								double omegacosx = glm::dot(Nx, di / abs(di));
+								double omegacosy = glm::dot(-Ny, di / abs(di));
+								//l borde vara rätt
+								double G = (omegacosx * omegacosy) / pow(l, 2);
+
+								sum += V * G;
+							}
+							//om vi har flera light kommer sum ändras vilket är fel 
+							sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
+
+							lightvalue = sum;
+						}
+						radiance = radianceray->importance * glm::vec3(lightvalue, lightvalue, lightvalue);
+
+					}
+					else if (radianceray->surface->getMaterial() == 2) {
+						radiance = radianceray->surface->getColor();
+					}
+				}
+				radianceray = radianceray->previous;
 			}
-			radianceray = radianceray->previous;
-		}
-
 
 		return radiance;
 	}
