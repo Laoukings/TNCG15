@@ -22,7 +22,7 @@ public:
 	glm::vec3 originpoint() { return origin; }
 	glm::vec3 direction() { return dir; }
 	glm::vec3 raycolor() { return importance; }
-	glm::vec3 recursivecolor(Scene& scene);
+	glm::vec3 recursivecolor();
 
 	ray *previous = nullptr;
 	ray *next = nullptr;
@@ -31,6 +31,7 @@ public:
 private:
 	//variables
 	glm::vec3 origin;
+	Scene rayscene;
 	glm::vec3 dir;
 	glm::vec3 end = glm::vec3(0.0, 0.0, 0.0);
 	//tror color borde vara importance

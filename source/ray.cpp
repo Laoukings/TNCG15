@@ -12,6 +12,7 @@
 	ray::ray(glm::vec3 originpoint, glm::vec3 direction, Scene& scene, glm::vec3 importans) {
 
 		//initialized variabler
+		rayscene = scene;
 		origin = originpoint;
 		dir = glm::normalize(direction);
 		importance = importans;
@@ -21,17 +22,17 @@
 		double t = 10000000000000000000000.0;
 		glm::vec3 intersec(0.0, 0.0, 0.0);
 
-		for (int i = 0; i < scene.getObjects().size(); i++)
+		for (int i = 0; i < rayscene.getObjects().size(); i++)
 		{	
 
-			if (scene.getObjects()[i]->collision(*this, intersec)) {
+			if (rayscene.getObjects()[i]->collision(*this, intersec)) {
 
 				t = glm::length(intersec - origin);
 
 				if (t < nearestColl) {
 					nearestColl = t;
 					end = intersec;
-					surface = scene.getObjects()[i];
+					surface = rayscene.getObjects()[i];
 				}
 			}
 		}
@@ -42,7 +43,7 @@
 				if (num%2 == 0) {
 					glm::vec3 randvec = Gauss(surface->Normal());
 					importance *= surface->getColor();
-					ray lambert(end, randvec, scene, importance);
+					ray lambert(end, randvec, rayscene, importance);
 					next = &lambert;
 					lambert.previous = this;
 				}
@@ -53,13 +54,13 @@
 			}
 			else if (surface->getMaterial() == 1) {
 				glm::vec3 d_o = this->direction() - glm::vec3(2.0, 2.0, 2.0) * glm::dot(this->direction(), surface->Normal()) * surface->Normal();
-				ray mirror(end, d_o, scene, importance);
+				ray mirror(end, d_o, rayscene, importance);
 				next = &mirror;
 				mirror.previous = this;
 			}
 			else if (surface->getMaterial() == 2) {
 				//just nu tar de alltid första lampans färg
-				importance = scene.getLights()[0].Color();
+				importance = rayscene.getLights()[0].Color();
 			}
 			else {
 				importance = surface->getColor();
@@ -69,7 +70,7 @@
 
 	}
 
-	glm::vec3 ray::recursivecolor(Scene& scene) {
+	glm::vec3 ray::recursivecolor() {
 
 		//while(next != nullptr) {
 		//	importance = next->importance;
@@ -78,10 +79,17 @@
 
 		glm::vec3 radiance(1.0, 1.0, 1.0);
 
+		ray* radianceray = this;
+
+		//if (next != nullptr) {
+		//	radianceray = next;
+		//}
+
 		//if (next == nullptr) {
 		//	return radiance;
 		//}
-		//while (next->next != nullptr) {
+
+		//while (next != nullptr) {
 		//	//if (next->surface != nullptr) {
 		//	//	if (next->surface->getMaterial() == 2) {
 		//	//		radiance = next->surface->getColor();
@@ -93,6 +101,7 @@
 		//	next = next->next;
 		//}
 
+
 		ray* dummy = this;
 
 		while (next != nullptr) {
@@ -100,7 +109,7 @@
 			next = next->next;
 		}
 
-		ray* radianceray = dummy;
+		radianceray = dummy;
 
 
 		int shadowrayamount = 5;
@@ -109,23 +118,25 @@
 		double lightvalue = 0.0;
 	
 			while (radianceray->previous != nullptr) {
+
 				if (radianceray->surface != nullptr) {
 
 					if (radianceray->surface->getMaterial() == 0) {
-						for (int i = 0; scene.getLights().size() > i; i++) {
+
+						for (int i = 0; rayscene.getLights().size() > i; i++) {
 							double sum = 0.0;
 							for (int j = 0; j < shadowrayamount; j++)
 							{
-								glm::vec3 pointonlight = scene.getLights()[i].Randompoint();
+								glm::vec3 pointonlight = rayscene.getLights()[i].Randompoint();
 								ray shadowray(radianceray->end, pointonlight - radianceray->end);
 								glm::vec3 intersec;
 								//kanske borde vara abs
 								double l = glm::length(pointonlight - radianceray->end);
 								int V = 1;
 
-								for (int n = 0; n < scene.getObjects().size(); n++)
+								for (int n = 0; n < rayscene.getObjects().size(); n++)
 								{	//vet inte hur den hanterar om objektet är ljudet eftersom den tekniskt sätt kommer collida med det alltid
-									if (&scene.getObjects()[n] != &surface && scene.getObjects()[n]->collision(shadowray, intersec)) {
+									if (&rayscene.getObjects()[n] != &surface && rayscene.getObjects()[n]->collision(shadowray, intersec)) {
 										//kanske borde vara abs
 										if (glm::length(intersec - shadowray.originpoint()) < l) {
 											V = 0;
@@ -135,7 +146,7 @@
 								}
 
 								glm::vec3 di = pointonlight - radianceray->end;
-								glm::vec3 Ny = scene.getLights()[i].Normal();
+								glm::vec3 Ny = rayscene.getLights()[i].Normal();
 								glm::vec3 Nx = radianceray->surface->Normal();
 								double omegacosx = glm::dot(Nx, di / abs(di));
 								double omegacosy = glm::dot(-Ny, di / abs(di));
@@ -145,7 +156,7 @@
 								sum += V * G;
 							}
 							//om vi har flera light kommer sum ändras vilket är fel 
-							sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
+							sum *= (rayscene.getLights()[i].Area() * Le) / shadowrayamount;
 
 							lightvalue = sum;
 						}
