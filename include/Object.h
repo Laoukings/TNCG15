@@ -25,12 +25,13 @@ public:
 		return material;
 	}
 
+
 protected:
 	//variables
 	glm::vec3 color = glm::vec3(0,0,0);
 
 	//0 = diffuse, 1 = mirror, 2 = light, 3 = room
-	int material;
+	int material = 0;
 };
 
 //subclass for spheres

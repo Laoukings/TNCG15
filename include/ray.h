@@ -17,6 +17,7 @@ public:
 	glm::vec3 terminateRay(Scene& scene);
 	glm::vec3 Gauss(glm::vec3 normal);
 	glm::vec3 Shadowray(std::shared_ptr<Object>& object, Light& light, Scene scene);
+	glm::vec3 Render(glm::vec3 _importance, Scene& scene);
 
 	//reach variables
 	glm::vec3 originpoint() { return origin; }

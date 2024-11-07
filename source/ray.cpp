@@ -38,6 +38,8 @@
 		}
 
 		if (surface != nullptr) {
+			//debugging
+			//std::cout << "yes";
 			if (surface->getMaterial() == 0) {
 				int num = rand();
 				if (num%2 == 0) {
@@ -65,6 +67,11 @@
 			else {
 				importance = surface->getColor();
 			}
+			
+		}
+		else {
+			//debugging
+			//std::cout << "no";
 		}
 
 
@@ -79,7 +86,7 @@
 
 		glm::vec3 radiance(1.0, 1.0, 1.0);
 
-		ray* radianceray = this;
+		ray* radianceray;
 
 		//if (next != nullptr) {
 		//	radianceray = next;
@@ -110,13 +117,15 @@
 		}
 
 		radianceray = dummy;
-
+		
 
 		int shadowrayamount = 5;
 		//vet inte om den har något bestämt värde
 		double Le = 3200.0;
 		double lightvalue = 0.0;
-	
+
+		if(radianceray != nullptr){
+
 			while (radianceray->previous != nullptr) {
 
 				if (radianceray->surface != nullptr) {
@@ -167,8 +176,11 @@
 						radiance = radianceray->surface->getColor();
 					}
 				}
+
 				radianceray = radianceray->previous;
+
 			}
+		}
 
 		return radiance;
 	}
@@ -545,4 +557,114 @@
 	
 
 		return terminatecolor;
+	}
+
+	glm::vec3 ray::Render(glm::vec3 _importance, Scene &scene) {
+		importance = _importance;
+		glm::vec3 intersectionpoint = glm::vec3(0.0f);
+		double maxlengthtointersec = 100000000000000000000000.0;
+		double lengthtointersec = 100000000000000000000000.0;
+		std::shared_ptr<Object> hitObject = nullptr;
+		glm::vec3 color(0.0f);
+
+		for (int i = 0; i < scene.getObjects().size(); i++)
+		{
+			if (scene.getObjects()[i]->collision(*this,intersectionpoint))
+			{
+				lengthtointersec = glm::length(intersectionpoint - this->originpoint());
+				this->end = intersectionpoint;
+
+				if (maxlengthtointersec > lengthtointersec) {
+					maxlengthtointersec = lengthtointersec;
+					hitObject = scene.getObjects()[i];
+					surface = scene.getObjects()[i];
+				}
+
+			}
+		}
+
+		int shadowrayamount = 5;
+		double Le = 3200.0;
+		float lightvalue = 0.0;
+
+		if (hitObject != nullptr) {
+			if (hitObject->getMaterial() == 2) {
+				return scene.getLights()[0].Color();
+			}
+			if (hitObject->getMaterial() == 0) {
+
+
+
+
+				for (int i = 0; scene.getLights().size() > i; i++) {
+
+					double sum = 0.0;
+
+					for (int j = 0; j < shadowrayamount; j++)
+					{
+						glm::vec3 pointonlight = scene.getLights()[i].Randompoint();
+						ray shadowray(end, pointonlight - end);
+						glm::vec3 intersec;
+						//kanske borde vara abs
+						double l = glm::length(pointonlight - end);
+						int V = 1;
+
+						for (int n = 0; n < scene.getObjects().size(); n++)
+						{	//vet inte hur den hanterar om objektet är ljuset eftersom den tekniskt sätt kommer collida med det alltid
+							if (&scene.getObjects()[n] != &hitObject && scene.getObjects()[n]->collision(shadowray, intersec)) {
+								//kanske borde vara abs
+								if (glm::length(intersec - shadowray.originpoint()) < l) {
+									V = 0;
+
+								}
+							}
+						}
+
+						glm::vec3 di = pointonlight - end;
+						glm::vec3 Ny = scene.getLights()[i].Normal();
+						glm::vec3 Nx = hitObject->Normal();
+						double omegacosx = glm::dot(Nx, di / abs(di));
+						double omegacosy = glm::dot(-Ny, di / abs(di));
+						//l borde vara rätt
+						double G = (omegacosx * omegacosy) / pow(l, 2);
+
+						sum += V * G;
+					}
+					//om vi har flera light kommer sum ändras vilket är fel 
+
+					sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
+
+					lightvalue = sum;
+
+				}
+
+
+				glm::vec3 randdir = Gauss(hitObject->Normal());
+				ray lambert(end, randdir);
+
+				color = hitObject->getColor();
+				color *= lightvalue * importance;
+				//antagligen fel
+				glm::vec3 nextImportance = hitObject->getColor();
+
+				double terminate = (double)rand() / RAND_MAX;
+				
+				if (terminate > 0.3) {
+
+
+					color += lambert.Render(nextImportance, scene);
+				}
+				else {
+
+					color *= importance;
+				}
+			}
+			if (hitObject->getMaterial() == 1) {
+				glm::vec3 d_o = this->dir - 2.0f * glm::dot(this->dir, hitObject->Normal()) * hitObject->Normal();
+				ray mirror(end, d_o);
+				return mirror.Render(importance, scene);
+			}
+		}
+
+		return color;
 	}

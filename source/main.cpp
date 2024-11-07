@@ -151,9 +151,10 @@ int main()
                 glm::vec3 pixelPos = glm::vec3(0.0, -x, -y) - camera.eye;
                 ray sceneray(camera.eye, pixelPos);
 
-                ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
-                color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
+                //ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
+                //color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
 
+                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Render(glm::vec3(1.0, 1.0, 1.0), scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raylist(scene, glm::vec3(1.0,1.0,1.0), nullptr);
