@@ -111,8 +111,8 @@ int main()
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 800;
-    camera.samples = 3;
+    camera.camerasize = 200;
+    camera.samples = 2;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
@@ -127,18 +127,19 @@ int main()
     {   
         //Skapar en rad
         camera.Picture.push_back(std::vector<glm::vec3>());
+        std::clog << "\r Rendering rows remaining: " << (camera.camerasize - Pixelx) << ' ' << std::flush;
 
         for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
         {   
             //skapar all kolumner
             camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
             //Temporärt test för att se att den fungerade som det ska
-            glm::vec3 color(0.0, 0.0, 0.0);
+            glm::vec3 color(1.0, 1.0, 1.0);
 
 
             //skickar massor samples
             for (int i = 0; i < camera.samples; i++)
-            {   
+            {
                 //roterad av någon anledning
                 double randomx = pixelrand(re) - 4.0 / camera.camerasize;
                 double randomy = pixelrand(re) - 4.0 / camera.camerasize;
@@ -154,33 +155,41 @@ int main()
                 //ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
                 //color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
 
-                color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Render(glm::vec3(1.0, 1.0, 1.0), scene);
+                color = (glm::vec3(255.99, 255.99, 255.99) * sceneray.Render(glm::vec3(1.0, 1.0, 1.0), scene));
+                //color = sceneray.Render(glm::vec3(1.0, 1.0, 1.0), scene);
+                //color += glm::vec3(255.99, 255.99, 255.99);
+
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raylist(scene, glm::vec3(1.0,1.0,1.0), nullptr);
-            }
 
-            if (color.x > largestcol) {
-                largestcol = color.x;
-            }
-            if (color.y > largestcol) {
-                largestcol = color.y;
-            }
-            if (color.z > largestcol) {
-                largestcol = color.z;
-            }
+                if (color.x > largestcol) {
+                    largestcol = color.x;
+                }
+                if (color.y > largestcol) {
+                    largestcol = color.y;
+                }
+                if (color.z > largestcol) {
+                    largestcol = color.z;
+                }
 
-            //camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
+             //färgen dividerad med största färgen
+                camera.Picture[Pixelx][Pixely].x = color.x * (1 / (largestcol / 255.999));
+                camera.Picture[Pixelx][Pixely].y = color.y * (1 / (largestcol / 255.999));
+                camera.Picture[Pixelx][Pixely].z = color.z * (1 / (largestcol / 255.999));
 
-            //färgen dividerad med största färgen
-            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
-            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
-
-
+                largestcol = 0;
             //Testar att skriva ut till ppm fil
+             //camera.Picture[Pixelx][Pixely] = color *glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
+            }
+
+
+            //std::cout << "Largestcol is: " << largestcol << "    ";
+
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
     }
+    std::clog << "\rDone!!!                 \n";
 
     return 0;
 }

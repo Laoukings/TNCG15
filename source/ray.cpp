@@ -76,7 +76,7 @@
 
 
 	}
-
+	/*
 	glm::vec3 ray::recursivecolor() {
 
 		//while(next != nullptr) {
@@ -184,7 +184,7 @@
 
 		return radiance;
 	}
-
+	*/
 	//gauss random funktion
 	glm::vec3 ray::Gauss(glm::vec3 normal) {
 		//random device
@@ -217,6 +217,7 @@
 	}
 
 	//mega function for calculating ray color
+	/*
 	glm::vec3 ray::Raycolorcalc(ray& inray, int reflectionamount, Scene& scene) {
 
 		//variables
@@ -349,7 +350,7 @@
 
 		return combinedcolor;
 	}
-
+	*/
 	glm::vec3 ray::Shadowray(std::shared_ptr<Object>& object, Light& light, Scene scene) {
 
 		glm::vec3 shadow(0.0, 0.0, 0.0);
@@ -357,7 +358,7 @@
 		//skumt namn
 		double darkper = 1.0;
 		glm::vec3 intersec;
-		glm::vec3 collisionpoint(0, 0, 0);
+		glm::vec3 collisionpoint(1, 1, 1);
 
 		//amount of rays
 		int shadowamount = 5;
@@ -406,7 +407,8 @@
 
 		return shadow;
 	}
-
+	
+	/*
 	glm::vec3 ray::Shootray(ray& inray, int reflectionamount, Scene& scene) {
 		
 		glm::vec3 intersec;
@@ -460,7 +462,8 @@
 
 		return color;
 	}
-
+	*/
+	/*
 	glm::vec3 ray::Raylist(Scene& scene, glm::vec3 input, ray *prevray) {
 		//assign object to ray
 
@@ -525,7 +528,8 @@
 
 		return listcolor;
 	}
-
+	*/
+	/*
 	glm::vec3 ray::terminateRay(Scene& scene) {
 
 		glm::vec3 terminatecolor(1.0,1.0,1.0);
@@ -558,6 +562,7 @@
 
 		return terminatecolor;
 	}
+	*/
 
 	glm::vec3 ray::Render(glm::vec3 _importance, Scene &scene) {
 		importance = _importance;
@@ -584,17 +589,14 @@
 		}
 
 		int shadowrayamount = 5;
-		double Le = 3200.0;
-		float lightvalue = 0.0;
+		double Le = 1000000;
+		float lightvalue = 0;
 
 		if (hitObject != nullptr) {
 			if (hitObject->getMaterial() == 2) {
 				return scene.getLights()[0].Color();
 			}
 			if (hitObject->getMaterial() == 0) {
-
-
-
 
 				for (int i = 0; scene.getLights().size() > i; i++) {
 
@@ -606,7 +608,7 @@
 						ray shadowray(end, pointonlight - end);
 						glm::vec3 intersec;
 						//kanske borde vara abs
-						double l = glm::length(pointonlight - end);
+						double l = glm::length(pointonlight - intersectionpoint);
 						int V = 1;
 
 						for (int n = 0; n < scene.getObjects().size(); n++)
@@ -615,27 +617,27 @@
 								//kanske borde vara abs
 								if (glm::length(intersec - shadowray.originpoint()) < l) {
 									V = 0;
-
 								}
 							}
 						}
 
 						glm::vec3 di = pointonlight - end;
+						di = normalize(di);
 						glm::vec3 Ny = scene.getLights()[i].Normal();
 						glm::vec3 Nx = hitObject->Normal();
-						double omegacosx = glm::dot(Nx, di / abs(di));
-						double omegacosy = glm::dot(-Ny, di / abs(di));
+						double omegacosx = glm::dot(Nx, di);
+						double omegacosy = glm::dot(-Ny, di);
 						//l borde vara rätt
-						double G = (omegacosx * omegacosy) / pow(l, 2);
-
+						//double G = (omegacosx * omegacosy) / pow (l,2);
+						double G = 1;
 						sum += V * G;
 					}
 					//om vi har flera light kommer sum ändras vilket är fel 
 
 					sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
-
+					sum *= Le / shadowrayamount;
+					
 					lightvalue = sum;
-
 				}
 
 
@@ -643,15 +645,14 @@
 				ray lambert(end, randdir);
 
 				color = hitObject->getColor();
-				color *= lightvalue * importance;
+				color *= lightvalue;
 				//antagligen fel
 				glm::vec3 nextImportance = hitObject->getColor();
 
 				double terminate = (double)rand() / RAND_MAX;
 				
 				if (terminate > 0.3) {
-
-
+					//color = glm::vec3(0.5,0.5,0.5);
 					color += lambert.Render(nextImportance, scene);
 				}
 				else {
