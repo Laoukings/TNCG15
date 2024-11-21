@@ -603,7 +603,9 @@
 					for (int j = 0; j < shadowrayamount; j++)
 					{
 						glm::vec3 pointonlight = scene.getLights()[i].Randompoint();
-						ray shadowray(end, pointonlight - end);
+
+						//test ray shadowray(end, pointonlight - end);
+						ray shadowray(end, end - pointonlight);
 						glm::vec3 intersec;
 						//kanske borde vara abs
 						double l = glm::length(pointonlight - end);
@@ -620,7 +622,8 @@
 							}
 						}
 
-						glm::vec3 di = pointonlight - end;
+						//test glm::vec3 di = pointonlight - end;
+						glm::vec3 di = end - pointonlight;
 						glm::vec3 Ny = scene.getLights()[i].Normal();
 						glm::vec3 Nx = hitObject->Normal();
 						double omegacosx = glm::dot(Nx, di / abs(di));
@@ -629,35 +632,43 @@
 						double G = (omegacosx * omegacosy) / pow(l, 2);
 
 						sum += V * G;
+						//sum = 1;
+
+
 					}
 					//om vi har flera light kommer sum ändras vilket är fel 
 
+
 					sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
+					//sum *= (scene.getLights()[i].Area()) / shadowrayamount;
 
 					lightvalue = sum;
 
+
 				}
 
 
-				glm::vec3 randdir = Gauss(hitObject->Normal());
-				ray lambert(end, randdir);
+				//glm::vec3 randdir = Gauss(hitObject->Normal());
+				//ray lambert(end, randdir);
 
-				color = hitObject->getColor();
-				color *= lightvalue * importance;
-				//antagligen fel
-				glm::vec3 nextImportance = hitObject->getColor();
+				//color = hitObject->getColor();
+				//color *= lightvalue * importance;
+				////antagligen fel
+				//glm::vec3 nextImportance = hitObject->getColor();
 
-				double terminate = (double)rand() / RAND_MAX;
-				
-				if (terminate > 0.3) {
+				//double terminate = (double)rand() / RAND_MAX;
+				//
+				//if (terminate > 0.3) {
 
 
-					color += lambert.Render(nextImportance, scene);
-				}
-				else {
+				//	color += lambert.Render(nextImportance, scene);
+				//}
+				//else {
 
-					color *= importance;
-				}
+				//	color *= importance;
+				//}
+
+				return hitObject->getColor() * lightvalue;
 			}
 			if (hitObject->getMaterial() == 1) {
 				glm::vec3 d_o = this->dir - 2.0f * glm::dot(this->dir, hitObject->Normal()) * hitObject->Normal();

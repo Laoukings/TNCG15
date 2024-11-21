@@ -7,6 +7,9 @@ Light::Light(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3, glm::vec3 poi
 	position = Rectangle(point1, point2, point3, point4, color,2);
 	area = glm::length(point2 - point1) * glm::length(point3 - point1);
 	this->point1 = point1;
+	this->point2 = point2;
+	this->point3 = point3;
+	this->point4 = point4;
 	}
 
 //the color of the light

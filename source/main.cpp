@@ -112,7 +112,7 @@ int main()
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 800;
-    camera.samples = 3;
+    camera.samples = 1;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
