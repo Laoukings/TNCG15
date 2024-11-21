@@ -111,15 +111,15 @@ int main()
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 800;
-    camera.samples = 1;
+    camera.camerasize = 400;
+    camera.samples = 2;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
     std::uniform_real_distribution<double> pixelrand(pixellowerbound, pixelupperbound);
     std::default_random_engine re;
 
-    double largestcol = 0.0;
+    double largestcol = 1.0;
 
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
     //for-loop som skapar en blank bild
@@ -160,6 +160,8 @@ int main()
                 //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raylist(scene, glm::vec3(1.0,1.0,1.0), nullptr);
             }
 
+
+
             if (color.x > largestcol) {
                 largestcol = color.x;
             }
@@ -173,10 +175,25 @@ int main()
             //camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
 
             //färgen dividerad med största färgen
-            camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+            camera.Picture[Pixelx][Pixely] = color;
             //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
 
 
+            //Testar att skriva ut till ppm fil
+            //std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
+        }
+
+
+    }
+
+    for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
+    {
+
+        for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
+        {
+            camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
+            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
             //Testar att skriva ut till ppm fil
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm.hpp>
+#include <Memory>
 
 class ray;
 
@@ -13,6 +14,10 @@ public:
 	//check if it collides
 	virtual bool collision(ray& ray, glm::vec3& intersectionpoint) = 0;
 
+	virtual bool isSame(std::shared_ptr<Object> same) = 0;
+
+	virtual glm::vec3 getPos() = 0;
+
 	//returns the normal
 	virtual glm::vec3 Normal() = 0;
 
@@ -24,7 +29,6 @@ public:
 	int getMaterial() {
 		return material;
 	}
-
 
 protected:
 	//variables
@@ -54,6 +58,10 @@ public:
 	//sphere collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
+	bool isSame(std::shared_ptr<Object> same) override;
+
+	glm::vec3 getPos() override;
+
 	//sphere normal
 	glm::vec3 Normal() override;
 
@@ -61,7 +69,7 @@ protected:
 	//sphere variables
 	double radius;
 	glm::vec3 position;
-	glm::vec3 normal;
+	glm::vec3 normal = glm::vec3(0.0,0.0,0.0);
 };
 
 //subclass for triangles
@@ -84,6 +92,10 @@ public:
 
 	//triangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
+
+	bool isSame(std::shared_ptr<Object> same) override;
+
+	glm::vec3 getPos() override;
 
 	//triangle normal
 	glm::vec3 Normal() override;
@@ -114,6 +126,10 @@ public:
 
 	//rectangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
+
+	bool isSame(std::shared_ptr<Object> same) override;
+
+	glm::vec3 getPos() override;
 
 	//rectangle normal
 	glm::vec3 Normal() override;

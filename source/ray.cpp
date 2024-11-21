@@ -613,28 +613,37 @@
 
 						for (int n = 0; n < scene.getObjects().size(); n++)
 						{	//vet inte hur den hanterar om objektet är ljuset eftersom den tekniskt sätt kommer collida med det alltid
-							if (&scene.getObjects()[n] != &hitObject && scene.getObjects()[n]->collision(shadowray, intersec)) {
+							//if (scene.getObjects()[n]->isSame(hitObject) == false && scene.getObjects()[n]->collision(shadowray, intersec)) {
+							if (scene.getObjects()[n]->isSame(hitObject) == false && scene.getObjects()[n]->collision(shadowray, intersec)) {
 								//kanske borde vara abs
-								if (glm::length(intersec - shadowray.originpoint()) < l) {
+								double shadowrayLength = glm::length(intersec - end);
+								if (shadowrayLength < l) {
 									V = 0;
 
 								}
 							}
 						}
 
-						//test glm::vec3 di = pointonlight - end;
-						glm::vec3 di = end - pointonlight;
+						//glm::vec3 di = pointonlight - end;
+						glm::vec3 di = pointonlight - end;
 						glm::vec3 Ny = scene.getLights()[i].Normal();
 						glm::vec3 Nx = hitObject->Normal();
-						double omegacosx = glm::dot(Nx, di / abs(di));
-						double omegacosy = glm::dot(-Ny, di / abs(di));
-						//l borde vara rätt
-						double G = (omegacosx * omegacosy) / pow(l, 2);
 
+						//double omegacosx = glm::dot(Nx, di / abs(di));
+						//double omegacosy = glm::dot(-Ny, di / abs(di));
+
+						double omegacosx = glm::dot(Nx,glm::normalize(di));
+						double omegacosy = glm::dot(-Ny,glm::normalize(di));
+
+						//double omegacosx = glm::dot(Nx,di / glm::normalize(di));
+						//double omegacosy = glm::dot(-Ny,di / glm::normalize(di));
+			
+						//double G = (omegacosx * omegacosy) / pow(l, 2);
+						double G = (omegacosx * omegacosy) / glm::dot(glm::normalize(di),glm::normalize(di));
+
+						
 						sum += V * G;
-						//sum = 1;
-
-
+						//sum += G * 1;
 					}
 					//om vi har flera light kommer sum ändras vilket är fel 
 

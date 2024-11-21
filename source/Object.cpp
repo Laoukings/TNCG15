@@ -1,10 +1,10 @@
-#include "Object.h"
+﻿#include "Object.h"
 #include "ray.h"
 
 
 
 //Sphere
-//anv�nds inte
+//används inte
 bool Sphere::intersecNormal(ray& ray) {
 	return false;
 }
@@ -85,37 +85,45 @@ bool Triangle::intersecNormal(ray& ray) {
 }
 
 //triangle collision skum just nu skapar fyrkanter
+//triangle collision
 bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 
-
 	//edges
-
-
 	glm::vec3 c1 = points[1] - points[0];
-	glm::vec3 c2 = points[2] - points[1];
+	glm::vec3 c2 = points[2] - points[0];
+	glm::vec3 origintopoint = ray.originpoint() - points[0];
+	glm::vec3 raycrossc1 = glm::cross(origintopoint, c1);
+	glm::vec3 raycrossc2 = glm::cross(ray.direction(), c2);
+	float det = glm::dot(c1, raycrossc2);
+	float inverdet = (1 / det);
 
+	float u = inverdet * glm::dot(raycrossc2, origintopoint);
+	float v = inverdet * glm::dot(raycrossc1, ray.direction());
+	float t = inverdet * glm::dot(ray.direction(), c2);
+
+	if (t < 0.001)
+	{
+		return false;
+	}
+
+	//formula möller
 	if (intersecNormal(ray)) {
-
-		double t = glm::dot((points[0] - ray.originpoint()), normal) / glm::dot(ray.direction(), normal);
-
-		if (t < 0.001)
-		{
-			return false;
-		}
-
 		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
 		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
 		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
-		double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
-		double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
+		//double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
+		//double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
 
-		if (((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0)) && a + b < 1)
+		//check collision
+		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.001 && 0.0 <= u <= 1.0))
 		{
 			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
+
 			return true;
 		}
 	}
 
+	return false;
 }
 
 //return triangles normal
@@ -179,3 +187,36 @@ glm::vec3 Rectangle::Normal() {
 	return glm::normalize(glm::cross(edge0to1, edge0to2));
 }
 
+glm::vec3 Sphere::getPos() {
+	return position;
+}
+
+glm::vec3 Triangle::getPos() {
+	return points[0];
+}
+
+glm::vec3 Rectangle::getPos() {
+	return points[0];
+}
+
+
+bool Sphere::isSame(std::shared_ptr<Object> same) {
+	if (abs(glm::length(position - same->getPos())) < 0.1) {
+		return true;
+	}
+	return false;
+}
+
+bool Rectangle::isSame(std::shared_ptr<Object> same) {
+	if (abs(glm::length(points[0] - same->getPos())) < 0.1) {
+		return true;
+	}
+	return false;
+}
+
+bool Triangle::isSame(std::shared_ptr<Object> same) {
+	if (abs(glm::length(points[0] - same->getPos())) < 0.1) {
+		return true;
+	}
+	return false;
+}
