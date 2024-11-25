@@ -105,14 +105,12 @@ int main()
     //Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
     //Triangle tricolltest2(v4, v3, v2, glm::vec3(0, 0, 1.0));
 
-
-
     //scene.addTriangle(tricolltest);
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 400;
-    camera.samples = 2;
+    camera.camerasize = 800;
+    camera.samples = 4;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;

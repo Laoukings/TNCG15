@@ -94,12 +94,14 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	glm::vec3 origintopoint = ray.originpoint() - points[0];
 	glm::vec3 raycrossc1 = glm::cross(origintopoint, c1);
 	glm::vec3 raycrossc2 = glm::cross(ray.direction(), c2);
-	float det = glm::dot(c1, raycrossc2);
+	float det = glm::dot(raycrossc2, c1);
 	float inverdet = (1 / det);
 
 	float u = inverdet * glm::dot(raycrossc2, origintopoint);
 	float v = inverdet * glm::dot(raycrossc1, ray.direction());
-	float t = inverdet * glm::dot(ray.direction(), c2);
+	float t = inverdet * glm::dot(raycrossc1, c2);
+	//double t = glm::dot((points[0] - ray.originpoint()), normal) / glm::dot(ray.direction(), normal);
+
 
 	if (t < 0.001)
 	{

@@ -588,13 +588,12 @@
 		float lightvalue = 0.0;
 
 		if (hitObject != nullptr) {
+			//return hitObject->getColor();
+
 			if (hitObject->getMaterial() == 2) {
 				return scene.getLights()[0].Color();
 			}
 			if (hitObject->getMaterial() == 0) {
-
-
-
 
 				for (int i = 0; scene.getLights().size() > i; i++) {
 
