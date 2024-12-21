@@ -14,53 +14,82 @@ bool Sphere::collision(ray& ray, glm::vec3& intersectionpoint) {
 
 	//formula
 	glm::vec3 SminusC = ray.originpoint() - position;
+
 	double c1 = glm::dot(ray.direction(), ray.direction());
+	//b
 	double c2 = glm::dot(ray.direction() * glm::vec3(2.0,2.0,2.0),SminusC);
+	//c
 	double c3 = glm::dot(SminusC,SminusC) - pow(radius,2);
 
 	double arg = pow(c2, 2) - (4.0 * c1 * c3);
 
+	double t;
 
-	//not done yet only checks if any collision not if the collision happens once or twice
 
+	
 	//check both the case of 1 intersection and 2
-	if (abs(arg) < 0.01) {
-		intersectionpoint = ray.originpoint() + (ray.direction() * glm::vec3(-c2/2.0, -c2 / 2.0, -c2 / 2.0));
-		normal = glm::normalize(intersectionpoint - position);
-		return true;
-	} 
+	//if (abs(arg) < 0.01) {
+	//	intersectionpoint = ray.originpoint() + (ray.direction() * glm::vec3(-c2/2.0, -c2 / 2.0, -c2 / 2.0));
+	//	normal = glm::normalize(intersectionpoint - position);
+	//	return true;
+	//} 
 
-	if (arg > 0.0) {
-		//exception om inte i denna
-		double tplus = (-c2 + sqrt(arg)) / (2.0 * c1);
-		double tminus = (-c2 - sqrt(arg)) / (2.0 * c1);
-		double t;
+	//if (arg > 0.0) {
+	//	//exception om inte i denna
+	//	double tplus = (-c2 + sqrt(arg)) / (2.0 * c1);
+	//	double tminus = (-c2 - sqrt(arg)) / (2.0 * c1);
+	
 
-		//check which t is smaller
-		if (tplus < tminus) {
-			t = tplus;
+	//	//check which t is smaller
+	//	if (tplus < tminus) {
+	//		t = tplus;
+	//	}
+	//	else {
+	//		t = tminus;
+	//	}
+
+	//	//check if t is super small for intersection
+	//	if (abs(t) < 0.001) {
+	//		if (tminus <= 0.001 && tplus <= 0.001) {
+	//			return false;
+	//		}
+	//		//change t to larger t
+	//		if (tplus > tminus) {
+	//			t = tplus;
+	//		}
+	//		else {
+	//			t = tminus;
+	//		}
+	//	}
+
+	//	intersectionpoint = ray.originpoint() + (glm::vec3(t, t, t) * ray.direction());
+	//	normal = glm::normalize(intersectionpoint - position);
+	//	//collision
+	//	//intersectionpoint += normal * 0.01f;
+	//	return true;
+	//}
+
+	//b = c2, c = c3
+	if (pow((c2 / 2.0f), 2) - c3 > 0.0f) {
+		float d1 = -(c2 / 2.0f) - sqrt(pow((c2 / 2.0f), 2) - c3);
+		float d2 = -(c2 / 2.0f) + sqrt(pow((c2 / 2.0f), 2) - c3);
+
+		t = std::min(d1, d2);
+
+		glm::vec3 pos1 = (ray.originpoint() + d1 * ray.direction());
+		glm::vec3 pos2 = (ray.originpoint() + d2 * ray.direction());
+
+
+		if (glm::distance(pos1, ray.originpoint()) < 0.001 && d2 > 0.0f) {
+			intersectionpoint = pos2;
+			normal = glm::normalize(intersectionpoint - position);
+			return true;
 		}
-		else {
-			t = tminus;
+		else if (d1 > 0.0f) {
+			intersectionpoint = pos1;
+			normal = glm::normalize(intersectionpoint - position);
+			return true;
 		}
-
-		//check if t is super small for intersection
-		if (abs(t) < 0.001) {
-			if (tminus <= 0.001 && tplus <= 0.001) {
-				return false;
-			}
-			//change t to larger t
-			if (tplus > tminus) {
-				t = tplus;
-			}
-			else {
-				t = tminus;
-			}
-		}
-
-		intersectionpoint = ray.originpoint() + (glm::vec3(t, t, t) * ray.direction());
-		normal = glm::normalize(intersectionpoint - position);
-		return true;
 	}
 
 	return false;
@@ -87,7 +116,7 @@ bool Triangle::intersecNormal(ray& ray) {
 //triangle collision skum just nu skapar fyrkanter
 //triangle collision
 bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
-
+	
 	//edges
 	glm::vec3 c1 = points[1] - points[0];
 	glm::vec3 c2 = points[2] - points[0];
@@ -156,14 +185,22 @@ bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	glm::vec3 c1 = points[1] - points[0];
 	glm::vec3 c2 = points[2] - points[0];
 
+	//nytt försök för t kopierar triangeln
+	glm::vec3 origintopoint = ray.originpoint() - points[0];
+	glm::vec3 raycrossc1 = glm::cross(origintopoint, c1);
+	glm::vec3 raycrossc2 = glm::cross(ray.direction(), c2);
+	float det = glm::dot(raycrossc2, c1);
+	float inverdet = (1 / det);
+	float t = inverdet * glm::dot(raycrossc1, c2);
+
+	if (t < 0.001)
+	{
+		return false;
+	}
+
 	if (intersecNormal(ray)) {
 
-		double t = glm::dot((points[0] - ray.originpoint()), normal) / glm::dot(ray.direction(), normal);
-
-		if (t < 0.001)
-		{
-			return false;
-		}
+		//double t = glm::dot((points[0] - ray.originpoint()), normal) / glm::dot(ray.direction(), normal);
 
 		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
 		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
@@ -173,7 +210,7 @@ bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		
 		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0))
 		{
-			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
+			//intersectionpoint += (normal * glm::vec3(0.01, 0.01, 0.01));
 			return true;
 		}
 	}

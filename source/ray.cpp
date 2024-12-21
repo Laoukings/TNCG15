@@ -604,7 +604,7 @@
 						glm::vec3 pointonlight = scene.getLights()[i].Randompoint();
 
 						//test ray shadowray(end, pointonlight - end);
-						ray shadowray(end, end - pointonlight);
+						ray shadowray(end, pointonlight - end);
 						glm::vec3 intersec;
 						//kanske borde vara abs
 						double l = glm::length(pointonlight - end);
@@ -613,14 +613,15 @@
 						for (int n = 0; n < scene.getObjects().size(); n++)
 						{	//vet inte hur den hanterar om objektet är ljuset eftersom den tekniskt sätt kommer collida med det alltid
 							//if (scene.getObjects()[n]->isSame(hitObject) == false && scene.getObjects()[n]->collision(shadowray, intersec)) {
-							if (scene.getObjects()[n]->isSame(hitObject) == false && scene.getObjects()[n]->collision(shadowray, intersec)) {
-								//kanske borde vara abs
+							if (scene.getObjects()[n] != hitObject && scene.getObjects()[n]->isSame(hitObject) == false && scene.getObjects()[n]->collision(shadowray, intersec)) {
+
 								double shadowrayLength = glm::length(intersec - end);
 								if (shadowrayLength < l) {
 									V = 0;
 
 								}
 							}
+
 						}
 
 						//glm::vec3 di = pointonlight - end;
@@ -642,7 +643,7 @@
 
 						
 						sum += V * G;
-						//sum += G * 1;
+						//sum += V * 1;
 					}
 					//om vi har flera light kommer sum ändras vilket är fel 
 
@@ -656,27 +657,27 @@
 				}
 
 
-				//glm::vec3 randdir = Gauss(hitObject->Normal());
-				//ray lambert(end, randdir);
+				glm::vec3 randdir = Gauss(hitObject->Normal());
+				ray lambert(end, randdir);
 
-				//color = hitObject->getColor();
-				//color *= lightvalue * importance;
+				color = hitObject->getColor();
+				color *= lightvalue * importance;
 				////antagligen fel
-				//glm::vec3 nextImportance = hitObject->getColor();
+				glm::vec3 nextImportance = hitObject->getColor();
 
-				//double terminate = (double)rand() / RAND_MAX;
-				//
-				//if (terminate > 0.3) {
+				double terminate = (double)rand() / RAND_MAX;
+				
+				if (terminate > 0.3) {
 
 
-				//	color += lambert.Render(nextImportance, scene);
-				//}
-				//else {
+					color += lambert.Render(nextImportance, scene);
+				}
+				else {
 
-				//	color *= importance;
-				//}
+					color *= importance;
+				}
 
-				return hitObject->getColor() * lightvalue;
+				//return hitObject->getColor() * lightvalue;
 			}
 			if (hitObject->getMaterial() == 1) {
 				glm::vec3 d_o = this->dir - 2.0f * glm::dot(this->dir, hitObject->Normal()) * hitObject->Normal();

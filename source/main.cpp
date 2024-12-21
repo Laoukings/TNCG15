@@ -28,8 +28,8 @@ int main()
     Scene scene;
 
     //massor testobject
-    Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1),0);
-    Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, -3.0), glm::vec3(0, 0.5, 1),0);
+    Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1), 0);
+    Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, 0.0), glm::vec3(0, 0.5, 1),0);
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -110,7 +110,7 @@ int main()
 
     //storlek på antal kolumner och rader i bilden
     camera.camerasize = 800;
-    camera.samples = 4;
+    camera.samples = 10;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
@@ -190,8 +190,8 @@ int main()
 
         for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
         {
-            camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
-            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
+            //camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
+            camera.Picture[Pixelx][Pixely] *=  glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
             //Testar att skriva ut till ppm fil
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
