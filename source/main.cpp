@@ -58,6 +58,11 @@ int main()
     glm::vec3 f5(0.0, 6.0, -5.0);
     glm::vec3 f6(10.0, 6.0, -5.0);
 
+    glm::vec3 l1(4.0, 5.9, 2.0);
+    glm::vec3 l2(4.0, 5.9, -2.0);
+    glm::vec3 l3(6.0, 5.9, 2.0);
+    glm::vec3 l4(6.0, 5.9, -2.0);
+
     Rectangle roof(r5,r6,r3,r2,glm::vec3(0,0,1.0),0);
     Triangle rooftri1(r2,r6,r1, glm::vec3(1.0, 0, 0),0);
     Triangle rooftri2(r5,r3,r4, glm::vec3(1.0, 0, 0),0);
@@ -98,8 +103,9 @@ int main()
 
     //testa runt lite
     Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
-    //Light light(r5, r6, r3, r2, glm::vec3(1.0, 1.0, 1.0));
+    //Light light2(l1, l2, l3, l4, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
+    //scene.addLight(light2);
 
     //normalerna är motsatta
     //Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
@@ -109,7 +115,7 @@ int main()
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 800;
+    camera.camerasize = 256;
     camera.samples = 10;
 
     double pixellowerbound = 0.0;
@@ -190,8 +196,8 @@ int main()
 
         for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
         {
-            //camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
-            camera.Picture[Pixelx][Pixely] *=  glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
+            camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
+            //camera.Picture[Pixelx][Pixely] *=  glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
             //Testar att skriva ut till ppm fil
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }

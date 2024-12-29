@@ -584,14 +584,16 @@
 		}
 
 		int shadowrayamount = 5;
-		double Le = 3200.0;
+		//double Le = 3200.0;
+		double Le = 0.2;
 		float lightvalue = 0.0;
 
 		if (hitObject != nullptr) {
 			//return hitObject->getColor();
 
 			if (hitObject->getMaterial() == 2) {
-				return scene.getLights()[0].Color();
+				//hitobject.color
+				return hitObject->getColor() * importance;
 			}
 			if (hitObject->getMaterial() == 0) {
 
@@ -662,8 +664,9 @@
 
 				color = hitObject->getColor();
 				color *= lightvalue * importance;
-				////antagligen fel
-				glm::vec3 nextImportance = hitObject->getColor();
+				//antagligen fel
+				glm::vec3 nextImportance = color * importance;
+
 
 				double terminate = (double)rand() / RAND_MAX;
 				
