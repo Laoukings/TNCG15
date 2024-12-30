@@ -585,7 +585,7 @@
 
 		int shadowrayamount = 5;
 		//double Le = 3200.0;
-		double Le = 0.2;
+		double Le = 0.1/scene.getLights().size();
 		float lightvalue = 0.0;
 
 		if (hitObject != nullptr) {
@@ -646,6 +646,7 @@
 						
 						sum += V * G;
 						//sum += V * 1;
+						
 					}
 					//om vi har flera light kommer sum ändras vilket är fel 
 
@@ -653,7 +654,7 @@
 					sum *= (scene.getLights()[i].Area() * Le) / shadowrayamount;
 					//sum *= (scene.getLights()[i].Area()) / shadowrayamount;
 
-					lightvalue = sum;
+					lightvalue += sum;
 
 
 				}
