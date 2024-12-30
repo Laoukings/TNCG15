@@ -29,7 +29,23 @@ int main()
 
     //massor testobject
     Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1), 0);
-    Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, 0.0), glm::vec3(0, 0.5, 1),0);
+    Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, 0.0), glm::vec3(0, 0.5, 1), 1);
+    glm::vec3 t1(4.0, 1.0, -3.0);
+    glm::vec3 t2(6.0, 2.0, -3.0);
+    glm::vec3 t3(6.0, -0.0, -3.0);
+    glm::vec3 t4(5.0, 1.0, 0.0);
+
+    //    t3      t2   
+    //        t4 
+    //        t1
+
+    Triangle tr1(t1, t3, t2, glm::vec3(0.3, 0.4, 0.8), 0);
+    Triangle tr2(t2, t1, t4, glm::vec3(0.3, 0.4, 0.8), 0);
+    Triangle tr3(t3, t2, t4, glm::vec3(0.3, 0.4, 0.8), 0);
+    Triangle tr4(t1, t3, t4, glm::vec3(0.3, 0.4, 0.8), 0);
+
+    
+
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -99,13 +115,18 @@ int main()
 
     scene.addSphere(secondSphere);
     scene.addSphere(red);
-  
+
+    scene.addTriangle(tr1);
+    scene.addTriangle(tr2);
+    scene.addTriangle(tr3);
+    scene.addTriangle(tr4);
 
     //testa runt lite
     Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
-    //Light light2(l1, l2, l3, l4, glm::vec3(1.0, 1.0, 1.0));
+    //Light light2(glm::vec3(6, -1, 4.0), glm::vec3(4, -1, 4.0), glm::vec3(6, 1, 4.0), glm::vec3(4, 1, 4.0), glm::vec3(1.0, 1.0, 1.0));
+    Light light2(l1, l2, l3, l4, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
-    //scene.addLight(light2);
+    scene.addLight(light2);
 
     //normalerna är motsatta
     //Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
@@ -115,8 +136,8 @@ int main()
     //scene.addTriangle(tricolltest2);
 
     //storlek på antal kolumner och rader i bilden
-    camera.camerasize = 256;
-    camera.samples = 10;
+    camera.camerasize = 800;
+    camera.samples = 50;
 
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
