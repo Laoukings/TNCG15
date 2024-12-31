@@ -671,7 +671,7 @@
 
 				double terminate = (double)rand() / RAND_MAX;
 				
-				if (terminate > 0.3) {
+				if (terminate > 0.5) {
 
 
 					color += lambert.Render(nextImportance, scene);

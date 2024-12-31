@@ -131,14 +131,15 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	float t = inverdet * glm::dot(raycrossc1, c2);
 	//double t = glm::dot((points[0] - ray.originpoint()), normal) / glm::dot(ray.direction(), normal);
 
-
-	if (t < 0.001)
-	{
-		return false;
-	}
-
 	//formula möller
 	if (intersecNormal(ray)) {
+
+		
+		if (t < 0.001)
+		{
+			return false;
+		}
+		
 		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
 		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
 		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
@@ -146,7 +147,7 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		//double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
 
 		//check collision
-		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.001 && 0.0 <= u <= 1.0))
+		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.0001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.0001 && 0.0 <= u <= 1.0))
 		{
 			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
 
@@ -208,7 +209,7 @@ bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
 		double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
 		
-		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0))
+		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.0001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.0001 && 0.0 <= a && a <= 1.0))
 		{
 			//intersectionpoint += (normal * glm::vec3(0.01, 0.01, 0.01));
 			return true;
