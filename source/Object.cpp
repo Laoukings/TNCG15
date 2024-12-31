@@ -4,7 +4,7 @@
 
 
 //Sphere
-//används inte men får fnatt om vi inte har en efterso mdet är en subclass
+//används inte men får fnatt om vi inte har en eftersom det är en subclass
 bool Sphere::intersecNormal(ray& ray) {
 	return false;
 }
@@ -66,10 +66,11 @@ bool Triangle::intersecNormal(ray& ray) {
 	}
 }
 
+
 //triangle collision
 bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
-	
-	//formel för triangel kollision
+
+	//formel och variabler
 	glm::vec3 c1 = points[1] - points[0];
 	glm::vec3 c2 = points[2] - points[0];
 	glm::vec3 origintopoint = ray.originpoint() - points[0];
@@ -80,31 +81,29 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	float u = inverdet * glm::dot(raycrossc2, origintopoint);
 	float v = inverdet * glm::dot(raycrossc1, ray.direction());
 	float t = inverdet * glm::dot(raycrossc1, c2);
-
+	
 	if (t < 0.001)
 	{
 		return false;
 	}
 
-	//checka om dens intersektion är rätt
+	//checka om intersektionen är rätt
 	if (intersecNormal(ray)) {
-
-
-		//bestäm var intersection kolliderar
 		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
 		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
 		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
 
+
 		//checka om den kolliderar
-		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.0001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.0001 && 0.0 <= u <= 1.0))
+		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.001 && 0.0 <= u <= 1.0))
 		{	
-			//sätt intersectionpunkten lite över objektet
+			//särr intersectionpunkten lite över objektet
 			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
 
 			return true;
 		}
 	}
-	//om den inte kolliderade returnera false
+
 	return false;
 }
 
@@ -129,7 +128,7 @@ bool Rectangle::intersecNormal(ray& ray) {
 
 //rektangel kollision
 bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
-	
+
 	//variabler för formeln
 	glm::vec3 c1 = points[1] - points[0];
 	glm::vec3 c2 = points[2] - points[0];
@@ -145,28 +144,26 @@ bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		return false;
 	}
 
-	//checka hållet av rektangeln så vi inte rendrerar baksidan
 	if (intersecNormal(ray)) {
 
-
-		//bestäm intersektionpunkten
+		//definiera intersektionpunkten
 		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
 		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
 		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
 		double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
 		double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
-		
+
 		//checka om vi kolliderar
-		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.0001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.0001 && 0.0 <= a && a <= 1.0))
-		{	
-			//sätt intersectionpunkten lite över objektet
-			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
+		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0))
+		{
+			//intersectionpoint += (normal * glm::vec3(0.01, 0.01, 0.01));
 			return true;
 		}
 	}
-	//returnera false om vi inte kolliderade
+	//returnera false om vi inte gör det
 	return false;
 }
+
 
 //returnera normalen av rektangeln
 //samma som triangel
