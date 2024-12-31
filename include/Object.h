@@ -3,25 +3,18 @@
 #include <glm.hpp>
 #include <Memory>
 
+//så vi kan använda ray
 class ray;
 
-//Masterclass
+//master klass
 class Object {
 public:
 
+	//funktioner
 	virtual bool intersecNormal(ray& ray) = 0;
-
-	//check if it collides
 	virtual bool collision(ray& ray, glm::vec3& intersectionpoint) = 0;
-
-	virtual bool isSame(std::shared_ptr<Object> same) = 0;
-
-	virtual glm::vec3 getPos() = 0;
-
-	//returns the normal
 	virtual glm::vec3 Normal() = 0;
 
-	//returns the color
 	glm::vec3 getColor() {
 		return color;
 	}
@@ -30,21 +23,22 @@ public:
 		return material;
 	}
 
+	//variabler
 protected:
-	//variables
+
 	glm::vec3 color = glm::vec3(0,0,0);
 
 	//0 = diffuse, 1 = mirror, 2 = light, 3 = room
 	int material = 0;
 };
 
-//subclass for spheres
+//subklass för sfärer
 class Sphere : public Object {
 public:
 
 	Sphere() = default;
 
-	//sphere constructor
+	//sfär konstruktor
 	Sphere(const double& rad, glm::vec3& pos, glm::vec3& spherecolor, int inmaterial) {
 		radius = rad;
 		position = pos;
@@ -53,33 +47,27 @@ public:
 		material = inmaterial;
 	}
 
+	//sfär formler
 	bool intersecNormal(ray& ray) override;
 
-	//sphere collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
-	bool isSame(std::shared_ptr<Object> same) override;
-
-	glm::vec3 getPos() override;
-
-	//sphere normal
 	glm::vec3 Normal() override;
 
 protected:
-	//sphere variables
+	//sfär variabler
 	double radius;
 	glm::vec3 position;
 	glm::vec3 normal = glm::vec3(0.0,0.0,0.0);
 };
 
-//subclass for triangles
+//subklass för trianglar
 class Triangle : public Object {
 public:
 	Triangle() = default;
 
-	//triangle constructor
+	//triangle konstruktor
 	Triangle(glm::vec3& point1, glm::vec3& point2, glm::vec3& point3, glm::vec3 trianglecolor, int inmaterial) {
-		//the corners of the triangle
 		points[0] = point1;
 		points[1] = point2;
 		points[2] = point3;
@@ -88,20 +76,16 @@ public:
 		material = inmaterial;
 	}
 
+	//triangel formler
 	bool intersecNormal(ray& ray) override;
 
-	//triangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
-	bool isSame(std::shared_ptr<Object> same) override;
-
-	glm::vec3 getPos() override;
-
-	//triangle normal
 	glm::vec3 Normal() override;
 
+	//triangel variabler
 protected:
-	//triangle variable
+
 	glm::vec3 points[3];
 	glm::vec3 normal;
 };
@@ -110,9 +94,8 @@ class Rectangle : public Object {
 public:
 	Rectangle() = default;
 
-	//rectangle constructor
+	//rektangle konstruktor
 	Rectangle(glm::vec3& point1, glm::vec3& point2, glm::vec3& point3,glm::vec3& point4, glm::vec3& rectanglecolor, int inmaterial) {
-		//corners of the rectangle
 		points[0] = point1;
 		points[1] = point2;
 		points[2] = point3;
@@ -122,21 +105,15 @@ public:
 		material = inmaterial;
 	}
 
+	//rektangel funktioner
 	bool intersecNormal(ray& ray) override;
 
-	//rectangle collision
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
-	bool isSame(std::shared_ptr<Object> same) override;
-
-	glm::vec3 getPos() override;
-
-	//rectangle normal
 	glm::vec3 Normal() override;
 
-
+	//rektangel variabler
 protected:
-	//rectangle variables
 	glm::vec3 points[4];
 	glm::vec3 normal;
 };

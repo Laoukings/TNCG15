@@ -13,23 +13,29 @@
 
 struct Camera
 {   
-    //2d array som lagrar alla pixlar. Just nu 500x500
+    //2d array för alla piclar
     std::vector<std::vector<glm::vec3>> Picture;
+    //hur hög upplösning bilden kommer ha
     int camerasize = 0;
+    //positionen av ögat
     glm::vec3 eye = glm::vec3(-1, 0, 0);
+    //antalet samples
     int samples;
 
 };
 
 int main()
 {
-    //Kameran som kommer rendreras
+    //Kameran som scenen bygger på
     Camera camera;
+    //scenen som ska rendreras
     Scene scene;
 
-    //massor testobject
+    //Sfärerna
     Sphere red(1.0, glm::vec3(10.0, 2.0, 0.0), glm::vec3(1, 0, 1), 0);
     Sphere secondSphere(1.0, glm::vec3(7.0, -2.0, 0.0), glm::vec3(0, 0.5, 1), 1);
+
+    //vertices for trianglarna till 3d trianglarna
     glm::vec3 t1(4.0, 1.0, -3.0);
     glm::vec3 t2(6.0, 2.0, -3.0);
     glm::vec3 t3(6.0, -0.0, -3.0);
@@ -39,13 +45,11 @@ int main()
     //        t4 
     //        t1
 
+    //De fyra trianglarna som gör upp 3d triangeln
     Triangle tr1(t1, t3, t2, glm::vec3(0.3, 0.4, 0.8), 0);
     Triangle tr2(t2, t1, t4, glm::vec3(0.3, 0.4, 0.8), 0);
     Triangle tr3(t3, t2, t4, glm::vec3(0.3, 0.4, 0.8), 0);
     Triangle tr4(t1, t3, t4, glm::vec3(0.3, 0.4, 0.8), 0);
-
-    
-
 
     //roof coordinates
              //glm::vec3(13,0,5)r1
@@ -60,7 +64,7 @@ int main()
              //glm::vec3(-3,0,-5)f4
 
 
-    //rummet
+    //vertices för rummet
     glm::vec3 r1(13.0, 0.0, 5.0);
     glm::vec3 r2(10.0, -6.0, 5.0);
     glm::vec3 r3(0.0, -6.0, 5.0);
@@ -74,10 +78,15 @@ int main()
     glm::vec3 f5(0.0, 6.0, -5.0);
     glm::vec3 f6(10.0, 6.0, -5.0);
 
+    //vertices för ljusen
     glm::vec3 l1(4.0, 5.9, 2.0);
     glm::vec3 l2(4.0, 5.9, -2.0);
     glm::vec3 l3(6.0, 5.9, 2.0);
     glm::vec3 l4(6.0, 5.9, -2.0);
+    glm::vec3 l5(6.0, -1.0, 4.9);
+    glm::vec3 l6(4.0, -1.0, 4.9);
+    glm::vec3 l7(6.0, 1.0, 4.9);
+    glm::vec3 l8(4.0, 1.0, 4.9);
 
     Rectangle roof(r5,r6,r3,r2,glm::vec3(0,0,1.0),0);
     Triangle rooftri1(r2,r6,r1, glm::vec3(1.0, 0, 0),0);
@@ -93,10 +102,6 @@ int main()
     Rectangle lfarwall(f6, f1, r6, r1, glm::vec3(1.0, 0.5, 0), 1);
     Rectangle rclosewall(f3, f4, r3, r4, glm::vec3(1.0, 0.5, 0.0),0);
     Rectangle lclosewall(f4, f5, r4, r5, glm::vec3(1.0, 0.5, 0.0),0);
-
-    //coll test
-    //Rectangle test(f6, f2, r6, r2, glm::vec3(1.0, 1.0, 1.0), 3);
-    //scene.addRectangle(test);
 
     scene.addRectangle(floor);
     scene.addTriangle(rooftri1);
@@ -121,33 +126,29 @@ int main()
     scene.addTriangle(tr3);
     scene.addTriangle(tr4);
 
-    //testa runt lite
-    Light light(glm::vec3(6, -1, 4.8), glm::vec3(4, -1, 4.8), glm::vec3(6, 1, 4.8), glm::vec3(4, 1, 4.8), glm::vec3(1.0, 1.0, 1.0));
-    //Light light2(glm::vec3(6, -1, 4.0), glm::vec3(4, -1, 4.0), glm::vec3(6, 1, 4.0), glm::vec3(4, 1, 4.0), glm::vec3(1.0, 1.0, 1.0));
-    Light light2(l1, l2, l3, l4, glm::vec3(1.0, 1.0, 1.0));
+    //ljus i scenen
+    Light light(l1, l2, l3, l4, glm::vec3(1.0, 1.0, 1.0));
+    Light light2(l5, l6, l7, l8, glm::vec3(1.0, 1.0, 1.0));
     scene.addLight(light);
     scene.addLight(light2);
 
-    //normalerna är motsatta
-    //Triangle tricolltest(v1, v2, v3, glm::vec3(0, 1.0, 0));
-    //Triangle tricolltest2(v4, v3, v2, glm::vec3(0, 0, 1.0));
-
-    //scene.addTriangle(tricolltest);
-    //scene.addTriangle(tricolltest2);
-
-    //storlek på antal kolumner och rader i bilden
+    //definerar kamerans värden
     camera.camerasize = 800;
     camera.samples = 1;
 
+    //random position i pixeln
     double pixellowerbound = 0.0;
     double pixelupperbound = 2.0/camera.camerasize;
     std::uniform_real_distribution<double> pixelrand(pixellowerbound, pixelupperbound);
     std::default_random_engine re;
 
+    //variabel som kommer hålla koll på största pixel värdet i scenen
     double largestcol = 1.0;
 
+    //text för ppm filen
     std::cout << "P3\n" << camera.camerasize << ' ' << camera.camerasize << "\n255\n";
-    //for-loop som skapar en blank bild
+
+    //for-loop som rendrerar bilden
     for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
     {   
         //Skapar en rad
@@ -157,36 +158,34 @@ int main()
         {   
             //skapar all kolumner
             camera.Picture[Pixelx].push_back(glm::vec3(0, 0, 0));
-            //Temporärt test för att se att den fungerade som det ska
+
+            //variabel som ska in i bilden
             glm::vec3 color(0.0, 0.0, 0.0);
 
 
-            //skickar massor samples
+            //En loop för varje sample
             for (int i = 0; i < camera.samples; i++)
             {   
-                //roterad av någon anledning
+                //Random punkter i pixeln
                 double randomx = pixelrand(re) - 4.0 / camera.camerasize;
                 double randomy = pixelrand(re) - 4.0 / camera.camerasize;
-
+                
+                //vart strålen skjuts
                 double x = (2.0 / (double)camera.camerasize) * (Pixely - (double)(camera.camerasize / 2.0)) + randomx;
                 double y = (2.0 / (double)camera.camerasize) * (Pixelx - (double)(camera.camerasize / 2.0)) + randomy;
 
 
-                //-x och -y
+                //bilden blir upp och ner om vi inte har -x och -y
                 glm::vec3 pixelPos = glm::vec3(0.0, -x, -y) - camera.eye;
+                //skicka strålen från eye till pixeln
                 ray sceneray(camera.eye, pixelPos);
 
-                //ray recursray(camera.eye, pixelPos, scene, glm::vec3(1.0,1.0,1.0));
-                //color += glm::vec3(255.99, 255.99, 255.99) * recursray.recursivecolor();
-
+                //skjut strålen genom scenen och få rätt färg
                 color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Render(glm::vec3(1.0, 1.0, 1.0), scene);
-                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raycolorcalc(sceneray , 1, scene);
-                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Shootray(sceneray , 1, scene);
-                //color += glm::vec3(255.99, 255.99, 255.99) * sceneray.Raylist(scene, glm::vec3(1.0,1.0,1.0), nullptr);
             }
 
 
-
+            //kolla om vi fått en ny största färg
             if (color.x > largestcol) {
                 largestcol = color.x;
             }
@@ -197,29 +196,24 @@ int main()
                 largestcol = color.z;
             }
 
-            //camera.Picture[Pixelx][Pixely] = glm::vec3(sceneray.Raycolorcalc(4, scene).x * 255.999, sceneray.Raycolorcalc(4, scene).y * 255.999, sceneray.Raycolorcalc(4, scene).z * 255.999);
-
-            //färgen dividerad med största färgen
-            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1/(largestcol/255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999)) ;
+            //sätt den nuvarande pixelns färg
             camera.Picture[Pixelx][Pixely] = color;
-            //camera.Picture[Pixelx][Pixely] = color * glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
 
-
-            //Testar att skriva ut till ppm fil
-            //std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
 
 
     }
 
+    //gå igenom hela bilden igen
     for (int Pixelx = 0; Pixelx < camera.camerasize; Pixelx++)
     {
 
         for (int Pixely = 0; Pixely < camera.camerasize; Pixely++)
-        {
+        {   
+            //dela med största färgvärdet så det blir normaliserat mellan 0-1 och multiplicera sedan med 255.9 så vi får rgb
             camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
-            //camera.Picture[Pixelx][Pixely] *=  glm::vec3(1.0 / camera.samples, 1.0 / camera.samples, 1.0 / camera.samples);
-            //Testar att skriva ut till ppm fil
+
+            //skriv en rad på ppm filen
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
     }

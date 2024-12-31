@@ -9,16 +9,16 @@
 class Scene
 {
 public:
-	//constructor
+	//konstruktor
 	Scene();
 
-	//add objects into scene
+	//lägg till objekt i scenen
 	void addSphere(Sphere object);
 	void addTriangle(Triangle object);
 	void addRectangle(Rectangle object);
 	void addLight(Light light);
 
-	//get the objects in the scene
+	//hämta objekt i scenen
 	std::vector<Sphere>& getSpheres() { return sceneSpheres; }
 	std::vector<Triangle>& getTriangles() { return sceneTriangles; }
 	std::vector<Rectangle>& getRectangle() { return sceneRectangles; }
@@ -26,7 +26,7 @@ public:
 	std::vector<std::shared_ptr<Object>>& getObjects() { return Objects; }
 
 private:
-	//vectors with all objects
+	//vectorer med alla objekt
 	std::vector<Sphere> sceneSpheres;
 	std::vector<Triangle> sceneTriangles;
 	std::vector<Rectangle> sceneRectangles;

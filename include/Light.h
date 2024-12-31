@@ -6,20 +6,20 @@
 class Light
 {
 public:
-	//light constructor
+	//light konstruktor
 	Light(glm::vec3 point1, glm::vec3 point2, glm::vec3 point3,  glm::vec3 point4,  glm::vec3 color );
 
-	//light functions
+	//light funktioner
 	glm::vec3 Color();
 	glm::vec3 Normal();
 	glm::vec3 Randompoint();
 	double Area();
 
-	//the position of the light source as a triangle
+	//ljuskällans objekt
 	Rectangle position;
 
 ; private:
-	//variables
+	//variabler
 	glm::vec3 point1;
 	glm::vec3 point2;
 	glm::vec3 point3;
