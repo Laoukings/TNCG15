@@ -83,10 +83,10 @@ int main()
     glm::vec3 l2(4.0, 5.9, -2.0);
     glm::vec3 l3(6.0, 5.9, 2.0);
     glm::vec3 l4(6.0, 5.9, -2.0);
-    glm::vec3 l5(6.0, -1.0, 4.9);
-    glm::vec3 l6(4.0, -1.0, 4.9);
-    glm::vec3 l7(6.0, 1.0, 4.9);
-    glm::vec3 l8(4.0, 1.0, 4.9);
+    glm::vec3 l5(6.5, -1.5, 4.9);
+    glm::vec3 l6(3.5, -1.5, 4.9);
+    glm::vec3 l7(6.5, 1.5, 4.9);
+    glm::vec3 l8(3.5, 1.5, 4.9);
 
     Rectangle roof(r5,r6,r3,r2,glm::vec3(0,0,1.0),0);
     Triangle rooftri1(r2,r6,r1, glm::vec3(1.0, 0, 0),0);
@@ -134,7 +134,7 @@ int main()
 
     //definerar kamerans värden
     camera.camerasize = 800;
-    camera.samples = 1;
+    camera.samples = 10;
 
     //random position i pixeln
     double pixellowerbound = 0.0;
@@ -214,6 +214,7 @@ int main()
             camera.Picture[Pixelx][Pixely] *= glm::vec3(1 / (largestcol / 255.999), 1 / (largestcol / 255.999), 1 / (largestcol / 255.999));
 
             //skriv en rad på ppm filen
+            //måste redirecta till en text fil istället för konsolen och sedan används https://www.cs.rhodes.edu/welshc/COMP141_F16/ppmReader.html för att läsa filen
             std::cout << int(camera.Picture[Pixelx][Pixely].x) << ' ' << int(camera.Picture[Pixelx][Pixely].y) << ' ' << int(camera.Picture[Pixelx][Pixely].z) << '\n';
         }
     }

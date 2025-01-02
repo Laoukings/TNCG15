@@ -11,7 +11,6 @@ class Object {
 public:
 
 	//funktioner
-	virtual bool intersecNormal(ray& ray) = 0;
 	virtual bool collision(ray& ray, glm::vec3& intersectionpoint) = 0;
 	virtual glm::vec3 Normal() = 0;
 
@@ -25,7 +24,6 @@ public:
 
 	//variabler
 protected:
-
 	glm::vec3 color = glm::vec3(0,0,0);
 
 	//0 = diffuse, 1 = mirror, 2 = light, 3 = room
@@ -48,7 +46,6 @@ public:
 	}
 
 	//sfär formler
-	bool intersecNormal(ray& ray) override;
 
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
@@ -77,7 +74,6 @@ public:
 	}
 
 	//triangel formler
-	bool intersecNormal(ray& ray) override;
 
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 
@@ -106,7 +102,6 @@ public:
 	}
 
 	//rektangel funktioner
-	bool intersecNormal(ray& ray) override;
 
 	bool collision(ray& ray, glm::vec3& intersectionpoint) override;
 

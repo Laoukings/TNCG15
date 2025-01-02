@@ -2,13 +2,6 @@
 #include "ray.h"
 
 
-
-//Sphere
-//används inte men får fnatt om vi inte har en eftersom det är en subclass
-bool Sphere::intersecNormal(ray& ray) {
-	return false;
-}
-
 //sphere collision
 bool Sphere::collision(ray& ray, glm::vec3& intersectionpoint) {
 
@@ -53,18 +46,6 @@ glm::vec3 Sphere::Normal() {
 	return normal;
 }
 
-//triangle
-bool Triangle::intersecNormal(ray& ray) {
-
-	//checka normalen
-	if (glm::dot(normal,ray.direction()) < 0)
-	{
-		return true;
-	}
-	else {
-		return false;
-	}
-}
 
 
 //triangle collision
@@ -88,18 +69,12 @@ bool Triangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 	}
 
 	//checka om intersektionen är rätt
-	if (intersecNormal(ray)) {
-		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
-		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
-		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
-
+	if (glm::dot(normal, ray.direction()) < 0) {
+		intersectionpoint = ray.originpoint() + (t * ray.direction());
 
 		//checka om den kolliderar
-		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.001 && 0.0 <= u <= 1.0))
+		if ((0.0 <= u && 0.0 <= v && (u + v) <= 1.0) || (abs(u) <= 0.0001 && 0.0 <= v <= 1.0) || (abs(v) <= 0.0001 && 0.0 <= u <= 1.0))
 		{	
-			//särr intersectionpunkten lite över objektet
-			intersectionpoint += (normal * glm::vec3(0.001, 0.001, 0.001));
-
 			return true;
 		}
 	}
@@ -113,17 +88,6 @@ glm::vec3 Triangle::Normal() {
 	glm::vec3 edge0to2 = points[2] - points[0];
 
 	return glm::normalize(glm::cross(edge0to1, edge0to2));
-}
-
-//samma som med triangel
-bool Rectangle::intersecNormal(ray& ray) {
-	if (glm::dot(normal, ray.direction()) < 0)
-	{
-		return true;
-	}
-	else {
-		return false;
-	}
 }
 
 //rektangel kollision
@@ -144,19 +108,16 @@ bool Rectangle::collision(ray& ray, glm::vec3& intersectionpoint) {
 		return false;
 	}
 
-	if (intersecNormal(ray)) {
+	if (glm::dot(normal, ray.direction()) < 0) {
 
 		//definiera intersektionpunkten
-		intersectionpoint.x = ray.originpoint().x + (t * ray.direction().x);
-		intersectionpoint.y = ray.originpoint().y + (t * ray.direction().y);
-		intersectionpoint.z = ray.originpoint().z + (t * ray.direction().z);
+		intersectionpoint = ray.originpoint() + (t * ray.direction());
 		double a = glm::dot((intersectionpoint - points[0]), c1) / glm::dot(c1, c1);
 		double b = glm::dot((intersectionpoint - points[0]), c2) / glm::dot(c2, c2);
 
 		//checka om vi kolliderar
 		if ((0.0 <= a && a <= 1.0 && 0.0 <= b && b <= 1.0) || (abs(a) <= 0.001 && 0.0 <= b && b <= 1.0) || (abs(b) <= 0.001 && 0.0 <= a && a <= 1.0))
 		{
-			//intersectionpoint += (normal * glm::vec3(0.01, 0.01, 0.01));
 			return true;
 		}
 	}

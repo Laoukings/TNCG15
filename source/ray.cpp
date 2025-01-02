@@ -14,6 +14,7 @@
 		//random device som ger oss en normalfördelning
 		std::random_device rd;
 		std::mt19937 mt(rd());
+		//normalfördelning
 		std::normal_distribution<double> normdist(0.0, 1.0);
 		double randval = normdist(mt);
 
