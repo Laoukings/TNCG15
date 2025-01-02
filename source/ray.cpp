@@ -151,7 +151,7 @@
 				//slumpmässig nummer som kollar om vi terminatear strålen eller inte
 				double terminate = ((double)rand() * 3) / RAND_MAX;
 				
-				if (terminate > importance.x + importance.y + importance.z) {
+				if (terminate < importance.x + importance.y + importance.z) {
 					//om vi inte terminatear kallar vi på render funktionen igen om går en stråle djupare
 					color += lambert.Render(nextImportance, scene);
 				}
