@@ -149,9 +149,9 @@
 				glm::vec3 nextImportance = color * importance;
 
 				//slumpmässig nummer som kollar om vi terminatear strålen eller inte
-				double terminate = (double)rand() / RAND_MAX;
+				double terminate = ((double)rand() * 3) / RAND_MAX;
 				
-				if (terminate > 0.5) {
+				if (terminate > importance.x + importance.y + importance.z) {
 					//om vi inte terminatear kallar vi på render funktionen igen om går en stråle djupare
 					color += lambert.Render(nextImportance, scene);
 				}
